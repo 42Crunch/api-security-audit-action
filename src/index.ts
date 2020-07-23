@@ -22,7 +22,7 @@ function getenv(names: string[]): any {
 async function run() {
   const apiToken = core.getInput('api-token', { required: true });
   const collectionName = core.getInput('collection-name', { required: true });
-  const minScore = core.getInput('minScore', { required: true });
+  const minScore = core.getInput('min-score', { required: true });
 
   console.log('got these', apiToken, collectionName, minScore);
 
