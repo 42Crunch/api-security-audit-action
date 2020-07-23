@@ -1,0 +1,36 @@
+{
+  "name": "api-security-audit-action",
+  "version": "0.0.0",
+  "description": "Performs API contract security audit to get a detailed analysis of the possible vulnerabilities and other issues in the API contract.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "ajv": "^6.12.2",
+    "form-data": "^2.3.3",
+    "global-agent": "^2.1.8",
+    "globby": "^11.0.0",
+    "got": "^11.1.4",
+    "js-yaml": "^3.13.1",
+    "json-schema-ref-parser": "https://github.com/42Crunch/json-schema-ref-parser.git#openapi",
+    "jsonc-parser": "^2.2.1",
+    "line-chomper": "^0.5.0",
+    "roarr": "^2.15.3",
+    "yaml-ast-parser-custom-tags": "0.0.43"
+  },
+  "devDependencies": {
+    "@types/global-agent": "^2.1.0",
+    "@types/got": "^9.6.11",
+    "@types/node": "^14.0.3",
+    "@types/roarr": "^2.14.2",
+    "ava": "^3.8.2",
+    "esm": "^3.2.25",
+    "json-schema": "^0.2.5",
+    "rewire": "^5.0.0",
+    "typescript": "3.8.3"
+  }
+}

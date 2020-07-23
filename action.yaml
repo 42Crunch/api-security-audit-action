@@ -1,0 +1,19 @@
+# action.yml
+name: '42Crunch REST API Static Security Testing'
+description: 'The REST API Static Security Testing action lets you add an automatic static application security testing (SAST) task to your CI/CD workflows'
+inputs:
+  api-token:
+    description: 'The API token to access 42Crunch Platform.'
+    required: true
+  collection-name:
+    description: 'The API token to access 42Crunch Platform.'
+    required: true
+    default: 'github'
+  min-score:
+    description: 'Minimum score for OpenAPI files.'
+    required: true
+    default: '75'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
