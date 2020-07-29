@@ -41,7 +41,8 @@ Create an API token in 42Crunch platform and copy its value into a [repository s
 ```yaml
 uses: 42Crunch/api-security-audit-action@v1
   with:
-  api-token: ${{ secrets.API_KEY }}```
+  api-token: ${{ secrets.API_KEY }}
+```
 
 The entire workflow which checks our the contents of the repository and runs security audit on the OpenAPI files found in the project might look like this:
 
@@ -57,7 +58,8 @@ jobs:
     - uses: 42Crunch/api-security-audit-action@v1
       with:
         api-token: ${{ secrets.API_KEY }}
-        min-score: 85```
+        min-score: 85
+```
 
 ## Support
 
