@@ -8,11 +8,11 @@ As a result of the security testing, your APIs get an audit score, with 100 poin
 
 API contracts must follow the OpenAPI Specification (OAS) (formely Swagger). Both OAS v2 and v3, and both JSON and YAML formats are supported.
 
-You can create a free 42Crunch account at https://platform.42crunch.com/register, and then configure the extension.
+You can create a free 42Crunch account at https://platform.42crunch.com/register, and then configure the action.
 
 ### Discover APIs
 
-By default, the extension locates all OpenAPI files in your project and submits them for static security testing. You can include or exclude specific paths from the discovery phase can omit the discovery phase completely by adding a configuration file `42c-conf.yaml` in the root of your repository and specifying rules for the discovery phase.
+By default, the action locates all OpenAPI files in your project and submits them for static security testing. You can include or exclude specific paths from the discovery phase can omit the discovery phase completely by adding a configuration file `42c-conf.yaml` in the root of your repository and specifying rules for the discovery phase.
 
 ### Fine-tune the action
 
