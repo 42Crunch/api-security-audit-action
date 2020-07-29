@@ -7,12 +7,15 @@
     "build": "tsc"
   },
   "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/42Crunch/api-security-audit-action.git"
+  },
   "license": "AGPL-3.0-only",
   "dependencies": {
     "@actions/core": "^1.2.4",
     "ajv": "^6.12.2",
     "form-data": "^2.3.3",
-    "global-agent": "^2.1.8",
     "globby": "^11.0.0",
     "got": "^11.1.4",
     "js-yaml": "^3.13.1",
@@ -23,7 +26,6 @@
     "yaml-ast-parser-custom-tags": "0.0.43"
   },
   "devDependencies": {
-    "@types/global-agent": "^2.1.0",
     "@types/got": "^9.6.11",
     "@types/node": "^14.0.3",
     "@types/roarr": "^2.14.2",
