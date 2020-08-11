@@ -34,14 +34,14 @@ A name for the API collection. Default: `github`
 
 ## Prerequisites
 
-Create an API token in 42Crunch platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_KEY`.
+Create an API token in 42Crunch platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.
 
 ## Example usage
 
 ```yaml
 uses: 42Crunch/api-security-audit-action@v1
   with:
-    api-token: ${{ secrets.API_KEY }}
+    api-token: ${{ secrets.API_TOKEN }}
 ```
 
 The entire workflow which checks our the contents of the repository and runs security audit on the OpenAPI files found in the project might look like this:
@@ -57,7 +57,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: 42Crunch/api-security-audit-action@v1
       with:
-        api-token: ${{ secrets.API_KEY }}
+        api-token: ${{ secrets.API_TOKEN }}
         min-score: 85
 ```
 
