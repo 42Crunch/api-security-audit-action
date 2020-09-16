@@ -6,13 +6,24 @@ inputs:
     description: 'The API token to access 42Crunch Platform.'
     required: true
   collection-name:
-    description: 'The API token to access 42Crunch Platform.'
+    description: 'A name for the API collection'
     required: true
     default: 'github'
   min-score:
     description: 'Minimum score for OpenAPI files.'
     required: true
     default: '75'
+  github-token:
+    required: true
+    default: ${{ github.token }}
+  upload-to-code-scanning:
+    description: 'Upload results to Github Code Scanning'
+    required: true
+    default: false
+  ignore-failures:
+    description: 'Do not fail the action even if the faiures were detected in the API contract'
+    required: true
+    default: false
 branding:
   icon: 'eye'  
   color: 'purple'
