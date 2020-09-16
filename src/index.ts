@@ -3,50 +3,10 @@
  Licensed under the GNU Affero General Public License version 3. See LICENSE.txt in the project root for license information.
 */
 
-import * as core from "@actions/core";
-import { audit, getStats } from "@xliic/cicd-core-node";
-import { produceSarif } from "./sarif";
-import { uploadSarif } from "./upload";
-
-function logger(levelName: string) {
-  const levels = {
-    FATAL: 5,
-    ERROR: 4,
-    WARN: 3,
-    INFO: 2,
-    DEBUG: 1,
-  };
-
-  const level = levels[levelName] ?? levels.INFO;
-
-  return {
-    debug: (message: string) => {
-      if (levels.DEBUG >= level) {
-        console.log(message);
-      }
-    },
-    info: (message: string) => {
-      if (levels.INFO >= level) {
-        console.log(message);
-      }
-    },
-    warning: (message: string) => {
-      if (levels.WARN >= level) {
-        console.log(message);
-      }
-    },
-    error: (message: string) => {
-      if (levels.ERROR >= level) {
-        console.log(message);
-      }
-    },
-    fatal: (message: string) => {
-      if (levels.FATAL >= level) {
-        console.log(message);
-      }
-    },
-  };
-}
+import * as core from '@actions/core';
+import { audit, getStats } from './audit';
+import { produceSarif } from './sarif';
+import { uploadSarif } from './upload';
 
 (async () => {
   try {
@@ -56,16 +16,7 @@ function logger(levelName: string) {
     const uploadToCodeScanning = core.getInput('upload-to-code-scanning', { required: true });
     const ignoreFailures = core.getInput('ignore-failures', { required: true });
 
-    const summary = await audit(process.cwd(), collectionName, minScore, {
-      referer,
-      userAgent,
-      apiToken,
-      onboardingUrl:
-        "https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm",
-      platformUrl,
-      logger: logger(logLevel),
-      lineNumbers: uploadToCodeScanning !== "false",
-    });
+    const summary = await audit(process.cwd(), apiToken, collectionName, minScore);
 
     if (uploadToCodeScanning !== 'false') {
       core.info('Uploading results to Code Scanning');

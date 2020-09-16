@@ -98,9 +98,7 @@ function articleById(id: string) {
     if (!part || !part.sections) {
       return '';
     }
-    return part.sections
-      .map((section) => `${section.text || ""}${section?.code?.json || ""}`)
-      .join("");
+    return part.sections.map((section) => `${section.text || ''}${section.code || ''}`).join('');
   }
 
   const article = articles[id] || fallbackArticle;

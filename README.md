@@ -111,6 +111,15 @@ Upload results to [Github Code Scanning](https://docs.github.com/en/github/findi
 Do not fail the action even if the faiures were detected in the API contract. Default: `false`
 
 
+### `upload-to-code-scanning`
+
+Upload results to [Github Code Scanning](https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning). Default: `false`
+
+### `ignore-failures`
+
+Do not fail the action even if the faiures were detected in the API contract. Default: `false`
+
+
 ## Prerequisites
 
 Create an API token in 42Crunch Platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.
