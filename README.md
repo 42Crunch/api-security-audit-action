@@ -102,6 +102,15 @@ Level of details in the logs, one of: `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`.
 
 Automatically share new API collections with everyone in your organization in 42Crunch Platform. Accepted values are: `OFF`, `READ_ONLY`, `READ_WRITE`. Default is `OFF`.
 
+### `upload-to-code-scanning`
+
+Upload results to [Github Code Scanning](https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning). Default: `false`
+
+### `ignore-failures`
+
+Do not fail the action even if the faiures were detected in the API contract. Default: `false`
+
+
 ## Prerequisites
 
 Create an API token in 42Crunch Platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.
@@ -109,11 +118,11 @@ Create an API token in 42Crunch Platform and copy its value into a [repository s
 ## Example usage
 
 ```yaml
-uses: 42Crunch/api-security-audit-action@v2
-with:
-  # Please create free account at https://platform.42crunch.com/register
-  # Follow these steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
-  api-token: ${{ secrets.API_TOKEN }}
+uses: 42Crunch/api-security-audit-action@v1
+  with:
+    # Please create free account at https://platform.42crunch.com/register
+    # Follow these steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
+    api-token: ${{ secrets.API_TOKEN }}
 ```
 
 The entire workflow which checks our the contents of the repository and runs Security Audit on the OpenAPI files found in the project might look like this:
@@ -126,13 +135,13 @@ jobs:
     runs-on: ubuntu-latest
     name: Audit OpenAPI files
     steps:
-      - uses: actions/checkout@v2
-      - uses: 42Crunch/api-security-audit-action@v2
-        with:
-          # Please create free account at https://platform.42crunch.com/register
-          # Follow these steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
-          api-token: ${{ secrets.API_TOKEN }}
-          min-score: 85
+    - uses: actions/checkout@v2
+    - uses: 42Crunch/api-security-audit-action@v1
+      with:
+        # Please create free account at https://platform.42crunch.com/register
+        # Follow these steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
+        api-token: ${{ secrets.API_TOKEN }}
+        min-score: 85
 ```
 
 ### Fine-tuning the action

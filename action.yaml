@@ -3,36 +3,27 @@ name: "42Crunch REST API Static Security Testing"
 description: "The REST API Static Security Testing action adds an automatic static application security testing (SAST) to your workflows"
 inputs:
   api-token:
-    description: "The API token to access 42Crunch Platform. Please create free account at https://platform.42crunch.com/register and follow hese steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm"
-    required: false
+    description: 'The API token to access 42Crunch Platform.'
+    required: true
+  collection-name:
+    description: 'A name for the API collection'
+    required: true
+    default: 'github'
   min-score:
-    description: "Minimum score for OpenAPI files."
-    required: false
-    default: "75"
-  platform-url:
-    description: "42Crunch platform URL"
-    required: false
-    default: "https://platform.42crunch.com"
-  log-level:
-    description: "Log level, one of: FATAL, ERROR, WARN, INFO, DEBUG"
-    required: false
-    default: "INFO"
-  share-everyone:
-    description: "Share new API collections with everyone, one of: OFF, READ_ONLY, READ_WRITE"
-    required: false
-    default: "OFF"
+    description: 'Minimum score for OpenAPI files.'
+    required: true
+    default: '75'
   github-token:
-    description: "GitHub token for uploading results to Github Code Scanning"
-    required: false
+    required: true
     default: ${{ github.token }}
   upload-to-code-scanning:
-    description: "Upload results to Github Code Scanning"
-    required: false
-    default: "false"
+    description: 'Upload results to Github Code Scanning'
+    required: true
+    default: false
   ignore-failures:
-    description: "Do not fail the action even if the faiures were detected in the API contract"
-    required: false
-    default: "false"
+    description: 'Do not fail the action even if the faiures were detected in the API contract'
+    required: true
+    default: false
 branding:
   icon: "eye"
   color: "purple"
