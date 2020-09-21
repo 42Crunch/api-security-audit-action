@@ -268,8 +268,8 @@ export function produceSarif(summary: Summary): Sarif {
         };
       }
     }
+    */
   }
-  */
 
   if (Object.keys(sarifFiles).length > 0) {
     sarifLog.runs[0].artifacts = [];
