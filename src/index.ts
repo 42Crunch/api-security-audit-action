@@ -31,6 +31,8 @@ import { uploadSarif } from './upload';
       } else if (total === 0) {
         core.setFailed('No OpenAPI files found');
       }
+    } else {
+      core.info('Configued to ignore failures');
     }
   } catch (ex) {
     core.setFailed(`Error: ${ex.message} ${(ex?.code || '', ex?.response?.body || '')}`);
