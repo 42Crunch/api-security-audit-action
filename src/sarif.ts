@@ -214,6 +214,7 @@ export function produceSarif(summary: Summary): Sarif {
       }
     }
 
+    /* Do not report failures for the time being
     if (result.failures && result.failures.length > 0) {
       for (let i = 0; i < result.failures.length; i++) {
         const failure = result.failures[i];
@@ -268,6 +269,7 @@ export function produceSarif(summary: Summary): Sarif {
       }
     }
   }
+  */
 
   if (Object.keys(sarifFiles).length > 0) {
     sarifLog.runs[0].artifacts = [];
