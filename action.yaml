@@ -3,27 +3,28 @@ name: '42Crunch REST API Static Security Testing'
 description: 'The REST API Static Security Testing action adds an automatic static application security testing (SAST) to your workflows'
 inputs:
   api-token:
-    description: 'The API token to access 42Crunch Platform.'
+    description: 'The API token to access 42Crunch Platform. Please create free account at https://platform.42crunch.com/register and follow hese steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm'
     required: true
+    default: ${{ secrets.API_TOKEN }}
   collection-name:
     description: 'A name for the API collection'
-    required: true
+    required: false
     default: 'github'
   min-score:
     description: 'Minimum score for OpenAPI files.'
-    required: true
+    required: false
     default: '75'
   github-token:
-    required: true
+    required: false
     default: ${{ github.token }}
   upload-to-code-scanning:
     description: 'Upload results to Github Code Scanning'
-    required: true
-    default: false
+    required: false
+    default: 'false'
   ignore-failures:
     description: 'Do not fail the action even if the faiures were detected in the API contract'
-    required: true
-    default: false
+    required: false
+    default: 'false'
 branding:
   icon: 'eye'  
   color: 'purple'
