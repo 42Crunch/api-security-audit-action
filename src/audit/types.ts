@@ -64,7 +64,7 @@ export interface Summary {
   };
 }
 
-export type SeverityEnum = "critical" | "high" | "medium" | "low" | "info";
+export type SeverityEnum = 'critical' | 'high' | 'medium' | 'low' | 'info';
 export type DiscoveryDisabled = false;
 
 export interface AuditConfig {
@@ -98,4 +98,11 @@ export interface Mapping {
 
 export interface Discovery {
   search?: string[];
+}
+
+export interface AuditOptions {
+  referer: string;
+  userAgent: string;
+  apiToken: string;
+  onboardingUrl: string;
 }
