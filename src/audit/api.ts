@@ -3,16 +3,11 @@
  Licensed under the GNU Affero General Public License version 3. See LICENSE.txt in the project root for license information.
 */
 
-import log from "roarr";
-import got, { HTTPError } from "got";
-import FormData from "form-data";
-import { RemoteApi, ApiStatus, RemoteApiError } from "./types";
-import {
-  PLATFORM_URL,
-  USER_AGENT,
-  ASSESSMENT_MAX_WAIT,
-  ASSESSMENT_RETRY,
-} from "./constants";
+import log from 'roarr';
+import got, { HTTPError } from 'got';
+import FormData from 'form-data';
+import { RemoteApi, ApiStatus, RemoteApiError, AuditOptions } from './types';
+import { PLATFORM_URL, ASSESSMENT_MAX_WAIT, ASSESSMENT_RETRY } from './constants';
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -22,7 +17,7 @@ function handleHttpError(err: any): RemoteApiError {
   if (
     err instanceof HTTPError &&
     err?.response?.statusCode === 409 &&
-    (<any>err?.response?.body)?.error === "limit reached"
+    (<any>err?.response?.body)?.error === 'limit reached'
   ) {
     return {
       statusCode: err.response.statusCode,
@@ -32,7 +27,7 @@ function handleHttpError(err: any): RemoteApiError {
   } else if (
     err instanceof HTTPError &&
     err?.response?.statusCode === 403 &&
-    (<any>err?.response?.body)?.error === "invalid authorization"
+    (<any>err?.response?.body)?.error === 'invalid authorization'
   ) {
     return {
       statusCode: err.response.statusCode,
@@ -43,47 +38,47 @@ function handleHttpError(err: any): RemoteApiError {
   throw err;
 }
 
-export async function listApis(
-  collectionId: string,
-  apiToken: string
-): Promise<any> {
+export async function listApis(collectionId: string, options: AuditOptions): Promise<any> {
   const { body } = await got(`api/v1/collections/${collectionId}/apis`, {
     prefixUrl: PLATFORM_URL,
-    method: "GET",
-    responseType: "json",
+    method: 'GET',
+    responseType: 'json',
     headers: {
-      Accept: "application/json",
-      "X-API-KEY": apiToken,
-      "User-Agent": USER_AGENT,
+      Accept: 'application/json',
+      'X-API-KEY': options.apiToken,
+      'User-Agent': options.userAgent,
+      Referer: options.referer,
     },
   });
   return body;
 }
 
-export async function listCollections(apiToken: string): Promise<any> {
-  const { body } = await got("api/v1/collections", {
+export async function listCollections(options: AuditOptions): Promise<any> {
+  const { body } = await got('api/v1/collections', {
     prefixUrl: PLATFORM_URL,
-    method: "GET",
-    responseType: "json",
+    method: 'GET',
+    responseType: 'json',
     headers: {
-      Accept: "application/json",
-      "X-API-KEY": apiToken,
-      "User-Agent": USER_AGENT,
+      Accept: 'application/json',
+      'X-API-KEY': options.apiToken,
+      'User-Agent': options.userAgent,
+      Referer: options.referer,
     },
   });
   return body;
 }
 
-export async function deleteApi(apiId: string, apiToken: string) {
+export async function deleteApi(apiId: string, options: AuditOptions) {
   log.debug(`Delete API ID: ${apiId}`);
   const { body } = await got(`api/v1/apis/${apiId}`, {
     prefixUrl: PLATFORM_URL,
-    method: "DELETE",
-    responseType: "json",
+    method: 'DELETE',
+    responseType: 'json',
     headers: {
-      Accept: "application/json",
-      "X-API-KEY": apiToken,
-      "User-Agent": USER_AGENT,
+      Accept: 'application/json',
+      'X-API-KEY': options.apiToken,
+      'User-Agent': options.userAgent,
+      Referer: options.referer,
     },
   });
   return body;
@@ -93,27 +88,28 @@ export async function createApi(
   collectionId: string,
   name: string,
   contents: Buffer,
-  apiToken: string
+  options: AuditOptions,
 ): Promise<RemoteApi | RemoteApiError> {
   log.debug(`Create API name: ${name} collection ID: ${collectionId}`);
   const form = new FormData();
-  form.append("specfile", contents.toString("utf-8"), {
-    filename: "swagger.json",
-    contentType: "application/json",
+  form.append('specfile', contents.toString('utf-8'), {
+    filename: 'swagger.json',
+    contentType: 'application/json',
   });
-  form.append("name", name);
-  form.append("cid", collectionId);
+  form.append('name', name);
+  form.append('cid', collectionId);
 
   try {
-    const { body } = <any>await got("api/v1/apis", {
+    const { body } = <any>await got('api/v1/apis', {
       prefixUrl: PLATFORM_URL,
-      method: "POST",
+      method: 'POST',
       body: form,
-      responseType: "json",
+      responseType: 'json',
       headers: {
-        Accept: "application/json",
-        "X-API-KEY": apiToken,
-        "User-Agent": USER_AGENT,
+        Accept: 'application/json',
+        'X-API-KEY': options.apiToken,
+        'User-Agent': options.userAgent,
+        Referer: options.referer,
       },
     });
     return {
@@ -125,25 +121,21 @@ export async function createApi(
   }
 }
 
-export async function readApiStatus(
-  apiId: string,
-  apiToken: string
-): Promise<ApiStatus> {
+export async function readApiStatus(apiId: string, options: AuditOptions): Promise<ApiStatus> {
   log.debug(`Read API ID: ${apiId}`);
   const { body } = <any>await got(`api/v1/apis/${apiId}`, {
     prefixUrl: PLATFORM_URL,
-    method: "GET",
-    responseType: "json",
+    method: 'GET',
+    responseType: 'json',
     headers: {
-      Accept: "application/json",
-      "X-API-KEY": apiToken,
-      "User-Agent": USER_AGENT,
+      Accept: 'application/json',
+      'X-API-KEY': options.apiToken,
+      'User-Agent': options.userAgent,
+      Referer: options.referer,
     },
   });
 
-  const lastAssessment = body?.assessment?.last
-    ? new Date(body.assessment.last)
-    : new Date(0);
+  const lastAssessment = body?.assessment?.last ? new Date(body.assessment.last) : new Date(0);
   const isProcessed = body.assessment.isProcessed;
 
   return {
@@ -155,22 +147,23 @@ export async function readApiStatus(
 export async function updateApi(
   apiId: string,
   contents: Buffer,
-  apiToken: string
+  options: AuditOptions,
 ): Promise<RemoteApi | RemoteApiError> {
   log.debug(`Update API ID: ${apiId}`);
 
   try {
-    const previousStatus = await readApiStatus(apiId, apiToken);
+    const previousStatus = await readApiStatus(apiId, options);
 
     const { body } = <any>await got(`api/v1/apis/${apiId}`, {
       prefixUrl: PLATFORM_URL,
-      method: "PUT",
-      json: { specfile: contents.toString("base64") },
-      responseType: "json",
+      method: 'PUT',
+      json: { specfile: contents.toString('base64') },
+      responseType: 'json',
       headers: {
-        Accept: "application/json",
-        "X-API-KEY": apiToken,
-        "User-Agent": USER_AGENT,
+        Accept: 'application/json',
+        'X-API-KEY': options.apiToken,
+        'User-Agent': options.userAgent,
+        Referer: options.referer,
       },
     });
 
@@ -183,64 +176,49 @@ export async function updateApi(
   }
 }
 
-export async function createCollection(
-  name: string,
-  apiToken: string
-): Promise<any> {
+export async function createCollection(name: string, options: AuditOptions): Promise<any> {
   log.debug(`Create collection: ${name}`);
-  const { body } = await got("api/v1/collections", {
+  const { body } = await got('api/v1/collections', {
     prefixUrl: PLATFORM_URL,
-    method: "POST",
+    method: 'POST',
     json: { name, isShared: false },
-    responseType: "json",
+    responseType: 'json',
     headers: {
-      Accept: "application/json",
-      "X-API-KEY": apiToken,
-      "User-Agent": USER_AGENT,
+      Accept: 'application/json',
+      'X-API-KEY': options.apiToken,
+      'User-Agent': options.userAgent,
+      Referer: options.referer,
     },
   });
   return body;
 }
 
-export async function readAssessment(
-  api: RemoteApi,
-  apiToken: string
-): Promise<any> {
+export async function readAssessment(api: RemoteApi, options: AuditOptions): Promise<any> {
   log.debug(`Reading assessment report for API ID: ${api.id}`);
 
   const start = Date.now();
   let now = Date.now();
   while (now - start < ASSESSMENT_MAX_WAIT) {
-    const status = await readApiStatus(api.id, apiToken);
-    const ready =
-      status.isProcessed &&
-      status.lastAssessment.getTime() >
-        api.previousStatus!.lastAssessment.getTime();
+    const status = await readApiStatus(api.id, options);
+    const ready = status.isProcessed && status.lastAssessment.getTime() > api.previousStatus!.lastAssessment.getTime();
     if (ready) {
-      const { body } = <any>(
-        await got(`api/v1/apis/${api.id}/assessmentreport`, {
-          prefixUrl: PLATFORM_URL,
-          method: "GET",
-          responseType: "json",
-          headers: {
-            Accept: "application/json",
-            "X-API-KEY": apiToken,
-            "User-Agent": USER_AGENT,
-          },
-        })
-      );
-      const report = JSON.parse(
-        Buffer.from(body.data, "base64").toString("utf8")
-      );
+      const { body } = <any>await got(`api/v1/apis/${api.id}/assessmentreport`, {
+        prefixUrl: PLATFORM_URL,
+        method: 'GET',
+        responseType: 'json',
+        headers: {
+          Accept: 'application/json',
+          'X-API-KEY': options.apiToken,
+          'User-Agent': options.userAgent,
+          Referer: options.referer,
+        },
+      });
+      const report = JSON.parse(Buffer.from(body.data, 'base64').toString('utf8'));
       return report;
     }
-    log.debug(
-      `Assessment report for API ID: ${api.id} is not ready, retrying.`
-    );
+    log.debug(`Assessment report for API ID: ${api.id} is not ready, retrying.`);
     await delay(ASSESSMENT_RETRY);
     now = Date.now();
   }
-  throw new Error(
-    `Timed out while waiting for the assessment report for API ID: ${api.id}`
-  );
+  throw new Error(`Timed out while waiting for the assessment report for API ID: ${api.id}`);
 }

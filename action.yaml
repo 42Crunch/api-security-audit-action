@@ -1,32 +1,32 @@
 # action.yml
-name: '42Crunch REST API Static Security Testing'
-description: 'The REST API Static Security Testing action adds an automatic static application security testing (SAST) to your workflows'
+name: "42Crunch REST API Static Security Testing"
+description: "The REST API Static Security Testing action adds an automatic static application security testing (SAST) to your workflows"
 inputs:
   api-token:
-    description: 'The API token to access 42Crunch Platform. Please create free account at https://platform.42crunch.com/register and follow hese steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm'
-    required: true
+    description: "The API token to access 42Crunch Platform. Please create free account at https://platform.42crunch.com/register and follow hese steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm"
+    required: false
   collection-name:
-    description: 'A name for the API collection'
+    description: "A name for the API collection"
     required: false
-    default: 'github'
+    default: "github"
   min-score:
-    description: 'Minimum score for OpenAPI files.'
+    description: "Minimum score for OpenAPI files."
     required: false
-    default: '75'
+    default: "75"
   github-token:
     required: false
     default: ${{ github.token }}
   upload-to-code-scanning:
-    description: 'Upload results to Github Code Scanning'
+    description: "Upload results to Github Code Scanning"
     required: false
-    default: 'false'
+    default: "false"
   ignore-failures:
-    description: 'Do not fail the action even if the faiures were detected in the API contract'
+    description: "Do not fail the action even if the faiures were detected in the API contract"
     required: false
-    default: 'false'
+    default: "false"
 branding:
-  icon: 'eye'  
-  color: 'purple'
+  icon: "eye"
+  color: "purple"
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: "docker"
+  image: "Dockerfile"

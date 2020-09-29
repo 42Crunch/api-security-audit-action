@@ -10,13 +10,20 @@ import { uploadSarif } from './upload';
 
 (async () => {
   try {
-    const apiToken = core.getInput('api-token', { required: true });
+    const apiToken = core.getInput('api-token', { required: false });
     const collectionName = core.getInput('collection-name', { required: true });
     const minScore = core.getInput('min-score', { required: true });
     const uploadToCodeScanning = core.getInput('upload-to-code-scanning', { required: true });
     const ignoreFailures = core.getInput('ignore-failures', { required: true });
+    const referer = `https://github.com/${process.env['GITHUB_REPOSITORY']}`;
+    const userAgent = `GithubAction-CICD/1.0`;
 
-    const summary = await audit(process.cwd(), apiToken, collectionName, minScore);
+    const summary = await audit(process.cwd(), collectionName, minScore, {
+      referer,
+      userAgent,
+      apiToken,
+      onboardingUrl: 'https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm',
+    });
 
     if (uploadToCodeScanning !== 'false') {
       core.info('Uploading results to Code Scanning');
