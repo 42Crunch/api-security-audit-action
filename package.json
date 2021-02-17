@@ -13,11 +13,11 @@
   },
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "@actions/core": "^1.2.4",
-    "@octokit/core": "^3.1.2",
+    "@actions/core": "^1.2.6",
+    "@octokit/core": "^3.2.5",
     "@types/turndown": "^5.0.0",
     "@xliic/cicd-core-node": "^1.1.0",
-    "turndown": "^6.0.0"
+    "turndown": "^7.0.0"
   },
   "devDependencies": {
     "@types/node": "^14.14.21",

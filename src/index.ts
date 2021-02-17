@@ -63,10 +63,6 @@ function logger(levelName: string) {
     const platformUrl = core.getInput("platform-url", { required: true });
     const logLevel = core.getInput("log-level", { required: true });
 
-    console.log("Running in", process.cwd());
-    const files = readdirSync(process.cwd());
-    console.log("Files", files);
-
     const summary = await audit(process.cwd(), collectionName, minScore, {
       referer,
       userAgent,
