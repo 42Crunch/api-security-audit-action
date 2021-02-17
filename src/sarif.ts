@@ -3,15 +3,15 @@
  Licensed under the GNU Affero General Public License version 3. See LICENSE.txt in the project root for license information.
 */
 
-import * as url from 'url';
-import { resolve } from 'path';
-import { Summary } from './audit/types';
-import articles from './articles.json';
-import TurndownService from 'turndown';
+import * as url from "url";
+import { resolve } from "path";
+import { Summary } from "@xliic/cicd-core-node/lib/types";
+import articles from "./articles.json";
+import TurndownService from "turndown";
 
 export interface Sarif {
   $schema?: string;
-  version: '2.1.0';
+  version: "2.1.0";
   runs: Run[];
 }
 
@@ -36,7 +36,7 @@ export interface Artifact {
 export interface Result {
   ruleId?: string;
   ruleIndex?: number;
-  level?: 'notApplicable' | 'pass' | 'note' | 'warning' | 'error' | 'open';
+  level?: "notApplicable" | "pass" | "note" | "warning" | "error" | "open";
   message?: {
     text?: string;
   };
@@ -74,13 +74,15 @@ export interface Rule {
   };
 }
 
-function getResultLevel(issue): 'notApplicable' | 'pass' | 'note' | 'warning' | 'error' | 'open' {
+function getResultLevel(
+  issue
+): "notApplicable" | "pass" | "note" | "warning" | "error" | "open" {
   const criticalityToSeverity = {
-    1: 'note',
-    2: 'note',
-    3: 'warning',
-    4: 'error',
-    5: 'error',
+    1: "note",
+    2: "note",
+    3: "warning",
+    4: "error",
+    5: "error",
   };
 
   return criticalityToSeverity[issue.criticality];
@@ -96,19 +98,21 @@ const fallbackArticle = {
 function articleById(id: string) {
   function partToText(part) {
     if (!part || !part.sections) {
-      return '';
+      return "";
     }
-    return part.sections.map((section) => `${section.text || ''}${section.code || ''}`).join('');
+    return part.sections
+      .map((section) => `${section.text || ""}${section.code || ""}`)
+      .join("");
   }
 
   const article = articles[id] || fallbackArticle;
 
   return [
-    article ? article.description.text : '',
+    article ? article.description.text : "",
     partToText(article.example),
     partToText(article.exploit),
     partToText(article.remediation),
-  ].join('');
+  ].join("");
 }
 
 export function produceSarif(summary: Summary): Sarif {
@@ -124,14 +128,14 @@ export function produceSarif(summary: Summary): Sarif {
   const turndownService = new TurndownService();
 
   const sarifLog: Sarif = {
-    version: '2.1.0',
-    $schema: 'http://json.schemastore.org/sarif-2.1.0-rtm.4',
+    version: "2.1.0",
+    $schema: "http://json.schemastore.org/sarif-2.1.0-rtm.4",
     runs: [
       {
         tool: {
           driver: {
-            name: '42Crunch REST API Static Security Testing',
-            informationUri: 'https://42crunch.com/',
+            name: "42Crunch REST API Static Security Testing",
+            informationUri: "https://42crunch.com/",
             rules: [],
           },
         },
@@ -147,7 +151,7 @@ export function produceSarif(summary: Summary): Sarif {
 
     if (result.issues) {
       for (const issue of result.issues) {
-        if (typeof sarifFiles[issue.file] === 'undefined') {
+        if (typeof sarifFiles[issue.file] === "undefined") {
           sarifArtifactIndices[issue.file] = nextArtifactIndex++;
           sarifFiles[issue.file] = {
             location: {
@@ -180,13 +184,13 @@ export function produceSarif(summary: Summary): Sarif {
 
         sarifResults.push(sarifRepresentation);
 
-        if (typeof sarifRules[issue.id] === 'undefined') {
+        if (typeof sarifRules[issue.id] === "undefined") {
           sarifRuleIndices[issue.id] = nextRuleIndex++;
 
-          let helpUrl = 'https://support.42crunch.com';
+          let helpUrl = "https://support.42crunch.com";
           const article = articles[issue.id];
           if (article) {
-            const version = issue.id.startsWith('v3-') ? 'oasv3' : 'oasv2';
+            const version = issue.id.startsWith("v3-") ? "oasv3" : "oasv2";
             const group = article.group;
             const subgroup = article.subgroup;
             helpUrl = `https://apisecurity.io/encyclopedia/content/${version}/${group}/${subgroup}/${issue.id}.htm`;
@@ -205,7 +209,7 @@ export function produceSarif(summary: Summary): Sarif {
               text: helpText,
             },
             properties: {
-              category: 'Other', //meta.docs.category,
+              category: "Other", //meta.docs.category,
             },
           };
         }

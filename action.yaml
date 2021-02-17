@@ -13,7 +13,16 @@ inputs:
     description: "Minimum score for OpenAPI files."
     required: false
     default: "75"
+  platform-url:
+    description: "42Crunch platform URL"
+    required: false
+    default: "https://platform.42crunch.com"
+  log-level:
+    description: "Log level, one of: FATAL, ERROR, WARN, INFO, DEBUG"
+    required: false
+    default: "INFO"
   github-token:
+    description: "GitHub token for uploading results to Github Code Scanning"
     required: false
     default: ${{ github.token }}
   upload-to-code-scanning:
