@@ -7,6 +7,7 @@ import * as core from "@actions/core";
 import { audit, getStats } from "@xliic/cicd-core-node";
 import { produceSarif } from "./sarif";
 import { uploadSarif } from "./upload";
+import { readdirSync } from "fs";
 
 function logger(levelName: string) {
   const levels = {
@@ -61,6 +62,10 @@ function logger(levelName: string) {
     const userAgent = `GithubAction-CICD/1.0`;
     const platformUrl = core.getInput("platform-url", { required: true });
     const logLevel = core.getInput("log-level", { required: true });
+
+    console.log("Running in", process.cwd());
+    const files = readdirSync(process.cwd());
+    console.log("Files", files);
 
     const summary = await audit(process.cwd(), collectionName, minScore, {
       referer,
