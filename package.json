@@ -4,8 +4,7 @@
   "description": "Performs API contract security audit to get a detailed analysis of the possible vulnerabilities and other issues in the API contract.",
   "main": "index.js",
   "scripts": {
-    "compile": "tsc",
-    "prepare": "npm run compile"
+    "build": "tsc"
   },
   "author": "",
   "repository": {
