@@ -101,7 +101,7 @@ function articleById(id: string) {
       return "";
     }
     return part.sections
-      .map((section) => `${section.text || ""}${section.code || ""}`)
+      .map((section) => `${section.text || ""}${section?.code?.json || ""}`)
       .join("");
   }
 

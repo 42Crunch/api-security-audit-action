@@ -7,7 +7,6 @@ import * as core from "@actions/core";
 import { audit, getStats } from "@xliic/cicd-core-node";
 import { produceSarif } from "./sarif";
 import { uploadSarif } from "./upload";
-import { readdirSync } from "fs";
 
 function logger(levelName: string) {
   const levels = {
@@ -71,6 +70,7 @@ function logger(levelName: string) {
         "https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm",
       platformUrl,
       logger: logger(logLevel),
+      lineNumbers: uploadToCodeScanning !== "false",
     });
 
     if (uploadToCodeScanning !== "false") {

@@ -4,7 +4,8 @@
   "description": "Performs API contract security audit to get a detailed analysis of the possible vulnerabilities and other issues in the API contract.",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -b"
+    "compile": "tsc",
+    "prepare": "npm run compile"
   },
   "author": "",
   "repository": {
@@ -16,13 +17,13 @@
     "@actions/core": "^1.2.6",
     "@octokit/core": "^3.2.5",
     "@types/turndown": "^5.0.0",
-    "@xliic/cicd-core-node": "^1.1.2",
+    "@xliic/cicd-core-node": "^1.3.0",
     "turndown": "^7.0.0"
   },
   "devDependencies": {
     "@types/node": "^14.14.21",
     "ava": "^3.12.1",
     "esm": "^3.2.25",
-    "typescript": "^4.1.3"
+    "typescript": "^4.2.2"
   }
 }
