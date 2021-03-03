@@ -3,6 +3,7 @@
  Licensed under the GNU Affero General Public License version 3. See LICENSE.txt in the project root for license information.
 */
 
+import { URL } from "url";
 import * as core from "@actions/core";
 import { audit, getStats } from "@xliic/cicd-core-node";
 import { produceSarif } from "./sarif";
@@ -62,13 +63,22 @@ function logger(levelName: string) {
     const platformUrl = core.getInput("platform-url", { required: true });
     const logLevel = core.getInput("log-level", { required: true });
 
+    if (!platformUrl || platformUrl === "") {
+      throw new Error("Platform URL must be set");
+    }
+
+    const url = new URL(platformUrl);
+    if (url.protocol !== "https:") {
+      throw new Error("Only https:// platform URLs are alowed");
+    }
+
     const summary = await audit(process.cwd(), collectionName, minScore, {
       referer,
       userAgent,
       apiToken,
       onboardingUrl:
         "https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm",
-      platformUrl,
+      platformUrl: url.origin,
       logger: logger(logLevel),
       lineNumbers: uploadToCodeScanning !== "false",
     });
