@@ -3,15 +3,17 @@
 The REST API Static Security Testing action locates REST API file contracts (Swagger or OpenAPI format, v2 and v3, JSON and YAML) and runs 200+ security checks on them.
 
 You can use this action in the following scenarios:
-* Add an automatic static application security testing (SAST) task to your CI/CD workflows
-* Perform these checks on Pull Request reviews and/or code merges
-* Output the located issues to GitHub's Security / Code Scanning Alerts
+
+- Add an automatic static application security testing (SAST) task to your CI/CD workflows
+- Perform these checks on Pull Request reviews and/or code merges
+- Output the located issues to GitHub's Security / Code Scanning Alerts
 
 The action is powered by 42Crunch [API Contract Security Audit](https://docs.42crunch.com/latest/content/concepts/api_contract_security_audit.htm). Security Audit performs a static analysis of the API definition that includes more than 200 checks on best practices and potential vulnerabilities on how the API defines authentication, authorization, transport, and data coming in and going out. For more details on the checks, see [API Security Encyclopedia](https://apisecurity.io/encyclopedia/content/api-security-encyclopedia.htm).
 
 ## Discover APIs in Your Repositories
 
 By default, this action will:
+
 1. Look for any .json and .yaml files in the repository
 2. Take the ones that use OpenAPI/Swagger schema
 3. Perform their security audit
@@ -28,7 +30,7 @@ Add this action to your CI/CD workflows in GitHub and have it fail on insecure A
 
 `75` is the default threshold score used if this parameter is not specified.
 
-You can set other more advanced failure conditions like scores by category (security or data validation), severity level of issues, or even specific issues by their ID. This is done by using the corresponding setting in the 42c_conf.yaml file that you can put in the root of the repository. See these advanced examples [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples). 
+You can set other more advanced failure conditions like scores by category (security or data validation), severity level of issues, or even specific issues by their ID. This is done by using the corresponding setting in the 42c_conf.yaml file that you can put in the root of the repository. See these advanced examples [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
 
 ## Check Pull Requests
 
@@ -37,7 +39,7 @@ If you want this security check to be performed automatically on each Pull Reque
 ```yaml
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
 ```
 
 Then set this Job as Required in repository **Settings / Branches / Branch protection rules / Require status checks to pass before merging**.
@@ -96,6 +98,16 @@ Do not fail the action even if the faiures were detected in the API contract. De
 
 This parameter can be useful if you are not using the action for CI/CD or pull request scenarios, but simply want it to keep updating Code Scanning alerts on each code change.
 
+### `platform-url`
+
+42Crunch Platform URL. Default: `https://platform.42crunch.com`
+
+If you are an enterprise customer _not_ accessing 42Crunch Platform at https://platform.42crunch.com, enter the URL you use to access the platform.
+
+### `log-level`
+
+Log level, one of: FATAL, ERROR, WARN, INFO, DEBUG. Default `INFO`
+
 ## Prerequisites
 
 Create an API token in 42Crunch platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.
@@ -120,13 +132,13 @@ jobs:
     runs-on: ubuntu-latest
     name: Audit OpenAPI files
     steps:
-    - uses: actions/checkout@v2
-    - uses: 42Crunch/api-security-audit-action@v1
-      with:
-        # Please create free account at https://platform.42crunch.com/register
-        # Follow these steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
-        api-token: ${{ secrets.API_TOKEN }}
-        min-score: 85
+      - uses: actions/checkout@v2
+      - uses: 42Crunch/api-security-audit-action@v1
+        with:
+          # Please create free account at https://platform.42crunch.com/register
+          # Follow these steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
+          api-token: ${{ secrets.API_TOKEN }}
+          min-score: 85
 ```
 
 ### Fine-tuning the action
