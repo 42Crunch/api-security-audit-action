@@ -3,9 +3,8 @@
  Licensed under the GNU Affero General Public License version 3. See LICENSE.txt in the project root for license information.
 */
 
-import { URL } from "url";
 import * as core from "@actions/core";
-import { audit, getStats } from "@xliic/cicd-core-node";
+import { audit } from "@xliic/cicd-core-node";
 import { produceSarif } from "./sarif";
 import { uploadSarif } from "./upload";
 
@@ -18,7 +17,7 @@ function logger(levelName: string) {
     DEBUG: 1,
   };
 
-  const level = levels[levelName] ?? levels.INFO;
+  const level = levels[levelName.toUpperCase()] ?? levels.INFO;
 
   return {
     debug: (message: string) => {
@@ -49,51 +48,60 @@ function logger(levelName: string) {
   };
 }
 
+function env(name: string): string {
+  if (typeof process.env[name] === "undefined") {
+    throw new Error(`Environment variable ${name} is not set`);
+  }
+  return process.env[name]!;
+}
+
 (async () => {
   try {
+    const githubServerUrl = env("GITHUB_SERVER_URL");
+    const githubRepository = env("GITHUB_REPOSITORY");
+    const branchName = env("GITHUB_REF");
+
+    const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
+
     const apiToken = core.getInput("api-token", { required: false });
-    const collectionName = core.getInput("collection-name", { required: true });
     const minScore = core.getInput("min-score", { required: true });
     const uploadToCodeScanning = core.getInput("upload-to-code-scanning", {
       required: true,
     });
     const ignoreFailures = core.getInput("ignore-failures", { required: true });
-    const referer = `https://github.com/${process.env["GITHUB_REPOSITORY"]}`;
     const userAgent = `GithubAction-CICD/1.0`;
     const platformUrl = core.getInput("platform-url", { required: true });
     const logLevel = core.getInput("log-level", { required: true });
-
-    if (!platformUrl || platformUrl === "") {
-      throw new Error("Platform URL must be set");
-    }
-
-    const url = new URL(platformUrl);
-    if (url.protocol !== "https:") {
-      throw new Error("Only https:// platform URLs are alowed");
-    }
-
-    const summary = await audit(process.cwd(), collectionName, minScore, {
-      referer,
+    const failOnInvalidContract = core.getInput("fail-on-invalid-contract", {
+      required: true,
+    });
+    const result = await audit({
+      rootDir: process.cwd(),
+      referer: repositoryUrl,
       userAgent,
       apiToken,
       onboardingUrl:
         "https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm",
-      platformUrl: url.origin,
+      platformUrl,
       logger: logger(logLevel),
       lineNumbers: uploadToCodeScanning !== "false",
+      branchName,
+      repoName: repositoryUrl,
+      cicdName: "default",
+      minScore,
+      failOnInvalidContract,
     });
 
     if (uploadToCodeScanning !== "false") {
       core.info("Uploading results to Code Scanning");
-      const sarif = produceSarif(summary);
+      const sarif = produceSarif(result!.summary);
       await uploadSarif(sarif);
     }
 
     if (ignoreFailures == "false") {
-      const [total, failures] = getStats(summary);
-      if (failures > 0) {
-        core.setFailed(`Completed with ${failures} failure(s)`);
-      } else if (total === 0) {
+      if (result!.failures > 0) {
+        core.setFailed(`Completed with ${result!.failures} failure(s)`);
+      } else if (result!.summary.size === 0) {
         core.setFailed("No OpenAPI files found");
       }
     } else {

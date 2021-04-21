@@ -145,9 +145,9 @@ export function produceSarif(summary: Summary): Sarif {
     ],
   };
 
-  for (const filename of Object.keys(summary)) {
+  for (const filename of summary.keys()) {
     const absoluteFile = resolve(filename);
-    const result = summary[filename];
+    const result = summary.get(filename)!;
 
     if (result.issues) {
       for (const issue of result.issues) {

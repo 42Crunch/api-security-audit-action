@@ -33,6 +33,10 @@ inputs:
     description: "Do not fail the action even if the faiures were detected in the API contract"
     required: false
     default: "false"
+  fail-on-invalid-contract:
+    description: "Fail on invalid OpenAPI files"
+    required: false
+    default: "true"
 branding:
   icon: "eye"
   color: "purple"
