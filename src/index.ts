@@ -59,22 +59,25 @@ function env(name: string): string {
   try {
     const githubServerUrl = env("GITHUB_SERVER_URL");
     const githubRepository = env("GITHUB_REPOSITORY");
-    const branchName = env("GITHUB_REF");
-
-    const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
-
+    const githubRef = env("GITHUB_REF");
     const apiToken = core.getInput("api-token", { required: false });
     const minScore = core.getInput("min-score", { required: true });
     const uploadToCodeScanning = core.getInput("upload-to-code-scanning", {
       required: true,
     });
     const ignoreFailures = core.getInput("ignore-failures", { required: true });
-    const userAgent = `GithubAction-CICD/1.0`;
+    const userAgent = `GithubAction-CICD/2.0`;
     const platformUrl = core.getInput("platform-url", { required: true });
     const logLevel = core.getInput("log-level", { required: true });
-    const failOnInvalidContract = core.getInput("fail-on-invalid-contract", {
-      required: true,
-    });
+
+    const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
+
+    if (!githubRef.startsWith("refs/heads/")) {
+      core.setFailed("Unable to retrieve the branch name.");
+      return;
+    }
+    const branchName = githubRef.substring("refs/heads/".length);
+
     const result = await audit({
       rootDir: process.cwd(),
       referer: repositoryUrl,
@@ -87,9 +90,8 @@ function env(name: string): string {
       lineNumbers: uploadToCodeScanning !== "false",
       branchName,
       repoName: repositoryUrl,
-      cicdName: "default",
+      cicdName: "github",
       minScore,
-      failOnInvalidContract,
     });
 
     if (uploadToCodeScanning !== "false") {

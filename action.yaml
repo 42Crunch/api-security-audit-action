@@ -5,10 +5,6 @@ inputs:
   api-token:
     description: "The API token to access 42Crunch Platform. Please create free account at https://platform.42crunch.com/register and follow hese steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm"
     required: false
-  collection-name:
-    description: "A name for the API collection"
-    required: false
-    default: "github"
   min-score:
     description: "Minimum score for OpenAPI files."
     required: false
@@ -33,10 +29,6 @@ inputs:
     description: "Do not fail the action even if the faiures were detected in the API contract"
     required: false
     default: "false"
-  fail-on-invalid-contract:
-    description: "Fail on invalid OpenAPI files"
-    required: false
-    default: "true"
 branding:
   icon: "eye"
   color: "purple"
