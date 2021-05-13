@@ -60,7 +60,7 @@ function getInputValue(input: string, options: any, defaultValue: any): any {
   }
 
   console.log(
-    `Unexpected value for input "${input}" using default value ${defaultValue} instead`
+    `Unexpected value for input "${input}" using default value instead`
   );
 
   return defaultValue;
