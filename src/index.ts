@@ -7,8 +7,9 @@ import * as core from "@actions/core";
 import { audit } from "@xliic/cicd-core-node";
 import { produceSarif } from "./sarif";
 import { uploadSarif } from "./upload";
+import { Logger, SharingType } from "@xliic/cicd-core-node/lib/types";
 
-function logger(levelName: string) {
+function logger(levelName: string): Logger {
   const levels = {
     FATAL: 5,
     ERROR: 4,
@@ -48,6 +49,23 @@ function logger(levelName: string) {
   };
 }
 
+function getInputValue(input: string, options: any, defaultValue: any): any {
+  const value = core.getInput(input, { required: false });
+  if (typeof value === "undefined") {
+    return defaultValue;
+  }
+
+  if (options.hasOwnProperty(value)) {
+    return options[value];
+  }
+
+  console.log(
+    `Unexpected value for input "${input}" using default value ${defaultValue} instead`
+  );
+
+  return defaultValue;
+}
+
 function env(name: string): string {
   if (typeof process.env[name] === "undefined") {
     throw new Error(`Environment variable ${name} is not set`);
@@ -78,6 +96,16 @@ function env(name: string): string {
     }
     const branchName = githubRef.substring("refs/heads/".length);
 
+    const shareEveryone = getInputValue(
+      "share-everyone",
+      {
+        OFF: undefined,
+        READ_ONLY: SharingType.ReadOnly,
+        READ_WRITE: SharingType.ReadWrite,
+      },
+      undefined
+    );
+
     const result = await audit({
       rootDir: process.cwd(),
       referer: repositoryUrl,
@@ -92,6 +120,7 @@ function env(name: string): string {
       repoName: repositoryUrl,
       cicdName: "github",
       minScore,
+      shareEveryone,
     });
 
     if (uploadToCodeScanning !== "false") {

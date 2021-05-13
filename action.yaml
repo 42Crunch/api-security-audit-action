@@ -17,6 +17,10 @@ inputs:
     description: "Log level, one of: FATAL, ERROR, WARN, INFO, DEBUG"
     required: false
     default: "INFO"
+  share-everyone:
+    description: "Share new API collections with everyone, one of: OFF, READ_ONLY, READ_WRITE"
+    required: false
+    default: "OFF"
   github-token:
     description: "GitHub token for uploading results to Github Code Scanning"
     required: false
