@@ -8,7 +8,7 @@ You can use this action in the following scenarios:
 - Perform these checks on Pull Request reviews and/or code merges
 - Output the located issues to GitHub's Security / Code Scanning Alerts
 
-The action is powered by 42Crunch [API Contract Security Audit](https://docs.42crunch.com/latest/content/concepts/api_contract_security_audit.htm). Security Audit performs a static analysis of the API definition that includes more than 200 checks on best practices and potential vulnerabilities on how the API defines authentication, authorization, transport, and data coming in and going out. For more details on the checks, see [API Security Encyclopedia](https://apisecurity.io/encyclopedia/content/api-security-encyclopedia.htm).
+The action is powered by 42Crunch [API Security Audit](https://docs.42crunch.com/latest/content/concepts/api_contract_security_audit.htm). Security Audit performs a static analysis of the API definition that includes more than 200 checks on best practices and potential vulnerabilities on how the API defines authentication, authorization, transport, and data coming in and going out. For more details on the checks, see [API Security Encyclopedia](https://apisecurity.io/encyclopedia/content/api-security-encyclopedia.htm).
 
 ## Discover APIs in Your Repositories
 
@@ -22,6 +22,8 @@ This allows you to locate the any new or changed API contracts in the repository
 
 You can fine-tune this behavior by specifying specific parts of the repository or filename masks to include or exclude in the search. You can even disable discovery completely and instead list specific API files to check and map them to APIs in the 42Crunch platform. This is done by using the corresponding setting in the 42c_conf.yaml file that you can put in the root of the repository. See these advanced examples [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
 
+All discovered APIs are uploaded to an API collection in 42Crunch Platform. The action uses the environment variable `GITHUB_REPOSITORY` and `GITHUB_REF` to show the repository and the branch name from where the API collection originated from. During the subsequent action runs, the APIs in the collection are kept in sync with the changes in your repository.
+
 ## Use in CI/CD to Block Security Issues
 
 Add this action to your CI/CD workflows in GitHub and have it fail on insecure API definitions.
@@ -31,18 +33,6 @@ Add this action to your CI/CD workflows in GitHub and have it fail on insecure A
 `75` is the default threshold score used if this parameter is not specified.
 
 You can set other more advanced failure conditions like scores by category (security or data validation), severity level of issues, or even specific issues by their ID. This is done by using the corresponding setting in the 42c_conf.yaml file that you can put in the root of the repository. See these advanced examples [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
-
-## Check Pull Requests
-
-If you want this security check to be performed automatically on each Pull Request, simply use this as a condition in your GitHub workflow file:
-
-```yaml
-on:
-  pull_request:
-    branches: [master]
-```
-
-Then set this Job as Required in repository **Settings / Branches / Branch protection rules / Require status checks to pass before merging**.
 
 ## Read Detailed Actionable Reports
 
@@ -82,12 +72,6 @@ Then follow the steps described in [this documentation](https://docs.42crunch.co
 
 Minimum score for OpenAPI files. Default: `75`
 
-### `collection-name`
-
-A name for the API collection. Default: `github`.
-
-Note that if the Discovery mode is on, on each run, the action will delete the content of this collection in the 42Crunch platform and re-upload all the API files that it locates. In this mode, the collection at the 42Crunch side is treated as disposable.
-
 ### `upload-to-code-scanning`
 
 Upload results to [Github Code Scanning](https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning). Default: `false`
@@ -106,7 +90,11 @@ If you are an enterprise customer _not_ accessing 42Crunch Platform at https://p
 
 ### `log-level`
 
-Log level, one of: FATAL, ERROR, WARN, INFO, DEBUG. Default `INFO`
+Log level, one of: `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`. Default `INFO`
+
+### `share-everyone`
+
+Share new API collections with everyone, one of: `OFF`, `READ_ONLY`, `READ_WRITE`. Default `OFF`
 
 ## Prerequisites
 
@@ -115,7 +103,7 @@ Create an API token in 42Crunch platform and copy its value into a [repository s
 ## Example usage
 
 ```yaml
-uses: 42Crunch/api-security-audit-action@v1
+uses: 42Crunch/api-security-audit-action@v2
 with:
   # Please create free account at https://platform.42crunch.com/register
   # Follow these steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
@@ -133,7 +121,7 @@ jobs:
     name: Audit OpenAPI files
     steps:
       - uses: actions/checkout@v2
-      - uses: 42Crunch/api-security-audit-action@v1
+      - uses: 42Crunch/api-security-audit-action@v2
         with:
           # Please create free account at https://platform.42crunch.com/register
           # Follow these steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
@@ -149,12 +137,10 @@ See these advanced examples [here](https://github.com/42Crunch/resources/tree/ma
 
 ## Support
 
-If you run into an issue, or have a question not answered here, you can create a support ticket at [support.42crunch.com](https://support.42crunch.com/), or ask your questions on the Q&A tab here.
-
-The pipe is maintained by support@42crunch.com.
+The action is maintained by support@42crunch.com. If you run into an issue, or have a question not answered here, you can create a support ticket at [support.42crunch.com](https://support.42crunch.com/).
 
 If you’re reporting an issue, please include:
 
-- the version of the pipe
+- the version of the action
 - relevant logs and error messages
 - steps to reproduce
