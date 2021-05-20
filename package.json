@@ -16,7 +16,7 @@
     "@actions/core": "^1.2.6",
     "@octokit/core": "^3.2.5",
     "@types/turndown": "^5.0.0",
-    "@xliic/cicd-core-node": "^2.6.0",
+    "@xliic/cicd-core-node": "^2.6.1",
     "turndown": "^7.0.0"
   },
   "devDependencies": {
