@@ -42,9 +42,9 @@ Follow the links to read the detailed report in 42Crunch Platform:
 
 <img src="images/42Crunch_platform_Security_Audit.png" width="1080" />
 
-## Get Code Scanning alerts
+## Get code scanning alerts in GitHub
 
-You can also check the issues that the action found directly in GitHub, on the **Security** tab in **Code Scanning Alerts**.
+You can also check the issues that the action found directly in GitHub, on the **Security** tab in **Code scanning alerts**.
 
 To enable that, simply include `upload-to-code-scanning:true` to the parameters of the action in your GitHub workflow.
 
