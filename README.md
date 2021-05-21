@@ -1,104 +1,102 @@
 # GitHub Action: 42Crunch REST API Static Security Testing
 
-The REST API Static Security Testing action locates REST API file contracts (Swagger or OpenAPI format, v2 and v3, JSON and YAML) and runs 200+ security checks on them.
+The REST API Static Security Testing action locates REST API file contracts that follow the OpenAPI Specification (OAS, formerly known as Swagger) and runs thorough security checks on them. Both OAS v2 and v3 are supported, on both JSON and YAML format.
 
 You can use this action in the following scenarios:
 
-- Add an automatic static application security testing (SAST) task to your CI/CD workflows
-- Perform these checks on Pull Request reviews and/or code merges
-- Output the located issues to GitHub's Security / Code Scanning Alerts
+- Add an automatic static application security testing (SAST) task to your CI/CD workflows.
+- Perform these checks on pull request reviews and/or code merges.
+- Flag the located issues in GitHub's Security / Code Scanning Alerts.
 
 The action is powered by 42Crunch [API Security Audit](https://docs.42crunch.com/latest/content/concepts/api_contract_security_audit.htm). Security Audit performs a static analysis of the API definition that includes more than 200 checks on best practices and potential vulnerabilities on how the API defines authentication, authorization, transport, and data coming in and going out. For more details on the checks, see [API Security Encyclopedia](https://apisecurity.io/encyclopedia/content/api-security-encyclopedia.htm).
 
-## Discover APIs in Your Repositories
+## Discover APIs in your repositories
 
 By default, this action will:
 
-1. Look for any .json and .yaml files in the repository
-2. Take the ones that use OpenAPI/Swagger schema
-3. Perform their security audit
+1. Look for any `.json` and `.yaml` files in the repository.
+2. Pick the files that use OpenAPI schema.
+3. Perform security audit on the OpenAPI definitions.
 
-This allows you to locate the any new or changed API contracts in the repository.
+This way you can locate the any new or changed API contracts in the repository.
 
-You can fine-tune this behavior by specifying specific parts of the repository or filename masks to include or exclude in the search. You can even disable discovery completely and instead list specific API files to check and map them to APIs in the 42Crunch platform. This is done by using the corresponding setting in the 42c_conf.yaml file that you can put in the root of the repository. See these advanced examples [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
+You can fine-tune how the action behaves by specifying specific parts of the repository or filename masks to be included or exclude in the discovery of APIs. You can even disable discovery completely and instead list only specific API files to be checked and map them to your existing APIs in 42Crunch API Security Platform. You configure all these settings in the configuration file `42c_conf.yaml` that you put in the root of your repository. For advanced examples, see [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
 
 All discovered APIs are uploaded to an API collection in 42Crunch Platform. The action uses the environment variable `GITHUB_REPOSITORY` and `GITHUB_REF` to show the repository and the branch name from where the API collection originated from. During the subsequent action runs, the APIs in the collection are kept in sync with the changes in your repository.
 
-## Use in CI/CD to Block Security Issues
+## Use the action in CI/CD to block security issues
 
-Add this action to your CI/CD workflows in GitHub and have it fail on insecure API definitions.
+Add this action to your CI/CD workflows in GitHub and have it fail on API definitions that contain security issues.
 
-42Crunch gives each API contract a score from 0 (very insecure) to 100 (no issues whatsoever). You can set the threshold level of that score by using the `min-score` parameter of this GitHub Action.
+Security Audit gives each API contract an audit score from 0 (very insecure) to 100 (no issues whatsoever). You can use he `min-score` parameter of the GitHub Action to set the threshold for the audit score where the action fails (the default is `75`, if no other value is specified). This helps to catch APIs definitions of bad quality and address the issues already during design time.
 
-`75` is the default threshold score used if this parameter is not specified.
+There are also other more advanced failure conditions you can set in the configuration file `42c_conf.yaml`, such as audit score by category (security or data validation), severity level of issues, or even specific issues, specified by their issue ID. For advanced examples, see [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
 
-You can set other more advanced failure conditions like scores by category (security or data validation), severity level of issues, or even specific issues by their ID. This is done by using the corresponding setting in the 42c_conf.yaml file that you can put in the root of the repository. See these advanced examples [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
+## Read detailed actionable reports
 
-## Read Detailed Actionable Reports
-
-Any time the action runs, it outputs for each OpenAPI file a link to the detailed prioritized actionable report:
+Everyy time the action runs, it includes a link to the detailed prioritized actionable report for each of your OpenAPI files:
 
 <img src="images/link_to_detailed_report.jpg" width="1080" />
 
-Follow the links to get to the detailed report in the 42Crunch platform:
+Follow the links to read the detailed report in 42Crunch Platform:
 
 <img src="images/42Crunch_platform_Security_Audit.png" width="1080" />
 
-## Get Code Scanning Alerts
+## Get Code Scanning alerts
 
-You can also see the issues located by this action directly in GitHub: on the **Security** tab in **Code Scanning Alerts**.
+You can also check the issues that the action found directly in GitHub, on the **Security** tab in **Code Scanning Alerts**.
 
-To enable that, simply include `upload-to-code-scanning:true` in this action configuration.
+To enable that, simply include `upload-to-code-scanning:true` to the parameters of the action in your GitHub workflow.
 
 <img src="images/42Crunch_GitHub-REST_API_Code_Scanning_Alerts.png" width="1080" />
 
-Click any of the alerts to see the exact location in the code and get the details of the exact vulnerability and recommended remediation steps.
+Click any of the alerts to see its exact location in your code and to get the details of the vulnerability and the recommended remediation steps.
 
 <img src="images/42Crunch_GitHub-Alert_Details.png" width="1080" />
 
-## Getting Started
+## Getting started
 
-This action is using Security Audit service from 42Crunch. Before using the action, create a free 42Crunch account at https://platform.42crunch.com/register.
+This action uses 42Crunch API Security Audit service. Before using the action, create a free 42Crunch account at https://platform.42crunch.com/register.
 
-Then follow the steps described in [this documentation](https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm) to create an API token at the 42Crunch side and save it as a secret in GitHub.
+Then follow the steps described in [documentation](https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm) to create an API token for the action to authenticate to 42Crunch Platform, and save it as a secret in GitHub.
 
-## Action Parameters
+## Action parameters
 
 ### `api-token`
 
-**Required** The API token to access 42Crunch Platform. Please do not put your API token directly in the workflow file, but instead create a secret in your repository settings and refer to it as shown in the example below.
+**Required** The API token that the GitHub action uses to authenticate to 42Crunch Platform. Do not put your API token directly in the workflow file! Instead, create a Github secret in your repository settings and refer to it as shown in the example below.
 
 ### `min-score`
 
-Minimum score for OpenAPI files. Default: `75`
+The minimum audit score that OpenAPI files must reach, otherwise the action fails. Default is `75`.
 
 ### `upload-to-code-scanning`
 
-Upload results to [Github Code Scanning](https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning). Default: `false`
+Upload the audit results to [Github Code Scanning](https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning). Default is `false`
 
 ### `ignore-failures`
 
-Do not fail the action even if the faiures were detected in the API contract. Default: `false`
+If you set this to `true`, the action does not fail even if the failures conditions (like `min-score`) you have set are met. Default is `false`.
 
-This parameter can be useful if you are not using the action for CI/CD or pull request scenarios, but simply want it to keep updating Code Scanning alerts on each code change.
+This parameter can be useful if you do not use the GitHub action for CI/CD or pull request scenarios, but simply want it to keep updating Code Scanning alerts on each code change. 
 
 ### `platform-url`
 
-42Crunch Platform URL. Default: `https://platform.42crunch.com`
+The URL where you access 42Crunch Platform URL. Default is `https://platform.42crunch.com`, and most users do not have to change this.
 
 If you are an enterprise customer _not_ accessing 42Crunch Platform at https://platform.42crunch.com, enter the URL you use to access the platform.
 
 ### `log-level`
 
-Log level, one of: `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`. Default `INFO`
+Level of details in the logs, one of: `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`. Default is `INFO`.
 
 ### `share-everyone`
 
-Share new API collections with everyone, one of: `OFF`, `READ_ONLY`, `READ_WRITE`. Default `OFF`
+Automatically share new API collections with everyone in your organization in 42Crunch Platform. Accepted values are: `OFF`, `READ_ONLY`, `READ_WRITE`. Default is `OFF`.
 
 ## Prerequisites
 
-Create an API token in 42Crunch platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.
+Create an API token in 42Crunch Platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.
 
 ## Example usage
 
@@ -110,7 +108,7 @@ with:
   api-token: ${{ secrets.API_TOKEN }}
 ```
 
-The entire workflow which checks our the contents of the repository and runs security audit on the OpenAPI files found in the project might look like this:
+The entire workflow which checks our the contents of the repository and runs Security Audit on the OpenAPI files found in the project might look like this:
 
 ```yaml
 on: [push]
@@ -139,8 +137,8 @@ See these advanced examples [here](https://github.com/42Crunch/resources/tree/ma
 
 The action is maintained by support@42crunch.com. If you run into an issue, or have a question not answered here, you can create a support ticket at [support.42crunch.com](https://support.42crunch.com/).
 
-If you’re reporting an issue, please include:
+If you are reporting an issue, do include:
 
-- the version of the action
-- relevant logs and error messages
-- steps to reproduce
+- The version of the GitHub action
+- Relevant logs and error messages
+- Steps to reproduce the issue
