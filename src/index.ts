@@ -90,10 +90,13 @@ function env(name: string): string {
 
     const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
 
-    if (!githubRef.startsWith("refs/heads/")) {
-      core.setFailed("Unable to retrieve the branch name.");
+    if (!githubRef || !githubRef.startsWith("refs/heads/")) {
+      core.setFailed(
+        `Unable to get the branch name, GITHUB_REF does not start with 'refs/heads/', GITHUB_REF: ${githubRef}`
+      );
       return;
     }
+
     const branchName = githubRef.substring("refs/heads/".length);
 
     const shareEveryone = getInputValue(
