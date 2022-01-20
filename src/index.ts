@@ -84,11 +84,6 @@ function getReference(): Reference | undefined {
   const PR_PREFIX = "refs/pull/";
   const ref = env("GITHUB_REF");
 
-  console.log("Env vars:");
-  for (const key of Object.keys(process.env)) {
-    console.log(`Env variable: ${key}: ${process.env[key]}`);
-  }
-
   if (ref.startsWith(BRANCH_PREFIX)) {
     const branch = ref.substring(BRANCH_PREFIX.length);
     return { branch };
@@ -100,12 +95,8 @@ function getReference(): Reference | undefined {
   }
 
   if (ref.startsWith(PR_PREFIX)) {
-    const baseRef = env("GITHUB_BASE_REF");
-    const pr = ref.substring(
-      BRANCH_PREFIX.length,
-      ref.length - "/merge".length
-    );
-    const targetBranch = baseRef.substring(BRANCH_PREFIX.length);
+    const pr = ref.substring(PR_PREFIX.length, ref.length - "/merge".length);
+    const targetBranch = env("GITHUB_BASE_REF");
     return { pr: { id: pr, target: targetBranch } };
   }
 }
