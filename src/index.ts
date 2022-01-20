@@ -84,6 +84,11 @@ function getReference(): Reference | undefined {
   const PR_PREFIX = "refs/pull/";
   const ref = env("GITHUB_REF");
 
+  console.log("Env vars:");
+  for (const key of Object.keys(process.env)) {
+    console.log(`Env variable: ${key}: ${process.env[key]}`);
+  }
+
   if (ref.startsWith(BRANCH_PREFIX)) {
     const branch = ref.substring(BRANCH_PREFIX.length);
     return { branch };
