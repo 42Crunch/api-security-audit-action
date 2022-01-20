@@ -5,7 +5,7 @@
 
 import * as url from "url";
 import { resolve } from "path";
-import { Summary } from "@xliic/cicd-core-node/lib/types";
+import { FileAuditMap } from "@xliic/cicd-core-node/lib/types";
 import articles from "./articles.json";
 import TurndownService from "turndown";
 
@@ -115,7 +115,7 @@ function articleById(id: string) {
   ].join("");
 }
 
-export function produceSarif(summary: Summary): Sarif {
+export function produceSarif(summary: FileAuditMap): Sarif {
   const sarifResults: Result[] = [];
   const sarifFiles = {};
 
@@ -148,6 +148,9 @@ export function produceSarif(summary: Summary): Sarif {
   for (const filename of summary.keys()) {
     const absoluteFile = resolve(filename);
     const result = summary.get(filename)!;
+    if ("errors" in result) {
+      continue;
+    }
 
     if (result.issues) {
       for (const issue of result.issues) {

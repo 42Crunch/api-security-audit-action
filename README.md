@@ -22,7 +22,7 @@ This way you can locate the any new or changed API contracts in the repository.
 
 You can fine-tune how the action behaves by specifying specific parts of the repository or filename masks to be included or exclude in the discovery of APIs. You can even disable discovery completely and instead list only specific API files to be checked and map them to your existing APIs in 42Crunch API Security Platform. You configure all these settings in the configuration file `42c-conf.yaml` that you put in the root of your repository. For advanced examples, see [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
 
-All discovered APIs are uploaded to an API collection in 42Crunch Platform. The action uses the environment variable `GITHUB_REPOSITORY` and `GITHUB_REF` to show the repository and the branch name from where the API collection originated from. During the subsequent action runs, the APIs in the collection are kept in sync with the changes in your repository.
+All discovered APIs are uploaded to an API collection in 42Crunch Platform. The action uses the environment variable `GITHUB_REPOSITORY` and `GITHUB_REF` to show the repository and the branch/tag/PR name from where the API collection originated from. During the subsequent action runs, the APIs in the collection are kept in sync with the changes in your repository.
 
 ## Use the action in CI/CD to block security issues
 
@@ -78,13 +78,21 @@ Upload the audit results to [Github Code Scanning](https://docs.github.com/en/gi
 
 If you set this to `true`, the action does not fail even if the failures conditions (like `min-score`) you have set are met. Default is `false`.
 
-This parameter can be useful if you do not use the GitHub action for CI/CD or pull request scenarios, but simply want it to keep updating Code Scanning alerts on each code change. 
+This parameter can be useful if you do not use the GitHub action for CI/CD or pull request scenarios, but simply want it to keep updating Code Scanning alerts on each code change.
 
 ### `platform-url`
 
 The URL where you access 42Crunch Platform URL. Default is `https://platform.42crunch.com`, and most users do not have to change this.
 
 If you are an enterprise customer _not_ accessing 42Crunch Platform at https://platform.42crunch.com, enter the URL you use to access the platform.
+
+### `root-directory`
+
+The root directory that contains the 42c-conf.yaml configuration file and the APIs. If not specified, the current working directory for the plugin is used instead, which normally corresponds to the root of the checked out repository.
+
+### `default-collection-name`
+
+The default collection name used when creating collections for discovered apis.
 
 ### `log-level`
 

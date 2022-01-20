@@ -3,11 +3,16 @@
  Licensed under the GNU Affero General Public License version 3. See LICENSE.txt in the project root for license information.
 */
 
+import { resolve } from "path";
 import * as core from "@actions/core";
 import { audit } from "@xliic/cicd-core-node";
 import { produceSarif } from "./sarif";
 import { uploadSarif } from "./upload";
-import { Logger, SharingType } from "@xliic/cicd-core-node/lib/types";
+import {
+  Logger,
+  Reference,
+  SharingType,
+} from "@xliic/cicd-core-node/lib/types";
 
 function logger(levelName: string): Logger {
   const levels = {
@@ -73,11 +78,37 @@ function env(name: string): string {
   return process.env[name]!;
 }
 
+function getReference(): Reference | undefined {
+  const BRANCH_PREFIX = "refs/heads/";
+  const TAG_PREFIX = "refs/tags/";
+  const PR_PREFIX = "refs/pull/";
+  const ref = env("GITHUB_REF");
+
+  if (ref.startsWith(BRANCH_PREFIX)) {
+    const branch = ref.substring(BRANCH_PREFIX.length);
+    return { branch };
+  }
+
+  if (ref.startsWith(TAG_PREFIX)) {
+    const tag = ref.substring(TAG_PREFIX.length);
+    return { tag };
+  }
+
+  if (ref.startsWith(PR_PREFIX)) {
+    const baseRef = env("GITHUB_BASE_REF");
+    const pr = ref.substring(
+      BRANCH_PREFIX.length,
+      ref.length - "/merge".length
+    );
+    const targetBranch = baseRef.substring(BRANCH_PREFIX.length);
+    return { pr: { id: pr, target: targetBranch } };
+  }
+}
+
 (async () => {
   try {
     const githubServerUrl = env("GITHUB_SERVER_URL");
     const githubRepository = env("GITHUB_REPOSITORY");
-    const githubRef = env("GITHUB_REF");
     const apiToken = core.getInput("api-token", { required: false });
     const minScore = core.getInput("min-score", { required: true });
     const uploadToCodeScanning = core.getInput("upload-to-code-scanning", {
@@ -87,17 +118,17 @@ function env(name: string): string {
     const userAgent = `GithubAction-CICD/2.0`;
     const platformUrl = core.getInput("platform-url", { required: true });
     const logLevel = core.getInput("log-level", { required: true });
-
+    const rootDirectory = core.getInput("root-directory", { required: false });
+    const defaultCollectionName = core.getInput("default-collection-name", {
+      required: false,
+    });
     const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
 
-    if (!githubRef || !githubRef.startsWith("refs/heads/")) {
-      core.setFailed(
-        `Unable to get the branch name, GITHUB_REF does not start with 'refs/heads/', GITHUB_REF: ${githubRef}`
-      );
+    const reference = getReference();
+    if (!reference) {
+      core.setFailed("Unable to get the branch/tag/PR name");
       return;
     }
-
-    const branchName = githubRef.substring("refs/heads/".length);
 
     const shareEveryone = getInputValue(
       "share-everyone",
@@ -109,8 +140,10 @@ function env(name: string): string {
       undefined
     );
 
+    const rootDir = resolve(process.cwd(), rootDirectory || ".");
+
     const result = await audit({
-      rootDir: process.cwd(),
+      rootDir,
       referer: repositoryUrl,
       userAgent,
       apiToken,
@@ -119,23 +152,24 @@ function env(name: string): string {
       platformUrl,
       logger: logger(logLevel),
       lineNumbers: uploadToCodeScanning !== "false",
-      branchName,
+      reference,
       repoName: repositoryUrl,
       cicdName: "github",
       minScore,
       shareEveryone,
+      defaultCollectionName,
     });
 
     if (uploadToCodeScanning !== "false") {
       core.info("Uploading results to Code Scanning");
-      const sarif = produceSarif(result!.summary);
+      const sarif = produceSarif(result.files);
       await uploadSarif(sarif);
     }
 
     if (ignoreFailures == "false") {
       if (result!.failures > 0) {
         core.setFailed(`Completed with ${result!.failures} failure(s)`);
-      } else if (result!.summary.size === 0) {
+      } else if (result.files.size === 0) {
         core.setFailed("No OpenAPI files found");
       }
     } else {
