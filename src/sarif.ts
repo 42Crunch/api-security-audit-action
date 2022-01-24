@@ -6,7 +6,7 @@
 import * as url from "url";
 import { resolve } from "path";
 import { Summary } from "@xliic/cicd-core-node/lib/types";
-import articles from "./articles.json";
+import got from "got";
 import TurndownService from "turndown";
 
 export interface Sarif {
@@ -74,6 +74,18 @@ export interface Rule {
   };
 }
 
+const ARTICLES_URL = "https://platform.42crunch.com/kdb/audit-with-yaml.json";
+
+export async function getArticles(): Promise<any> {
+  try {
+    const response = await got(ARTICLES_URL);
+    const articles = JSON.parse(response.body);
+    return articles;
+  } catch (error) {
+    throw new Error(`Failed to read articles.json: ${error}`);
+  }
+}
+
 function getResultLevel(
   issue
 ): "notApplicable" | "pass" | "note" | "warning" | "error" | "open" {
@@ -95,7 +107,7 @@ const fallbackArticle = {
   },
 };
 
-function articleById(id: string) {
+function articleById(articles: any, id: string) {
   function partToText(part) {
     if (!part || !part.sections) {
       return "";
@@ -115,7 +127,7 @@ function articleById(id: string) {
   ].join("");
 }
 
-export function produceSarif(summary: Summary): Sarif {
+export async function produceSarif(summary: Summary): Promise<Sarif> {
   const sarifResults: Result[] = [];
   const sarifFiles = {};
 
@@ -126,6 +138,7 @@ export function produceSarif(summary: Summary): Sarif {
   let nextArtifactIndex = 0;
 
   const turndownService = new TurndownService();
+  const articles = await getArticles();
 
   const sarifLog: Sarif = {
     version: "2.1.0",
@@ -196,7 +209,9 @@ export function produceSarif(summary: Summary): Sarif {
             helpUrl = `https://apisecurity.io/encyclopedia/content/${version}/${group}/${subgroup}/${issue.id}.htm`;
           }
 
-          const helpText = turndownService.turndown(articleById(issue.id));
+          const helpText = turndownService.turndown(
+            articleById(articles, issue.id)
+          );
 
           // Create a new entry in the rules dictionary.
           sarifRules[issue.id] = {

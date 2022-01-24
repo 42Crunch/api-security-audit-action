@@ -85,7 +85,7 @@ function logger(levelName: string) {
 
     if (uploadToCodeScanning !== "false") {
       core.info("Uploading results to Code Scanning");
-      const sarif = produceSarif(summary);
+      const sarif = await produceSarif(summary);
       await uploadSarif(sarif);
     }
 
