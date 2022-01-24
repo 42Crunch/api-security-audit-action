@@ -158,7 +158,7 @@ function getReference(): Reference | undefined {
 
     if (uploadToCodeScanning !== "false") {
       core.info("Uploading results to Code Scanning");
-      const sarif = produceSarif(result.files);
+      const sarif = await produceSarif(result.files);
       await uploadSarif(sarif);
     }
 
