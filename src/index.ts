@@ -128,7 +128,7 @@ function env(name: string): string {
 
     if (uploadToCodeScanning !== "false") {
       core.info("Uploading results to Code Scanning");
-      const sarif = produceSarif(result!.summary);
+      const sarif = await produceSarif(result!.summary);
       await uploadSarif(sarif);
     }
 
