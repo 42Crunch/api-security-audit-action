@@ -33,6 +33,12 @@ inputs:
     description: "Do not fail the action even if the faiures were detected in the API contract"
     required: false
     default: "false"
+  root-directory:
+    description: "Set the root directory for the plugin"
+    required: false
+  default-collection-name:
+    description: "Change the default collection name"
+    required: false
 branding:
   icon: "eye"
   color: "purple"
