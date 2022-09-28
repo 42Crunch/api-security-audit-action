@@ -39,6 +39,10 @@ inputs:
   default-collection-name:
     description: "Change the default collection name"
     required: false
+  json-report:
+    description: 'Writes Audit report in JSON format to a specified file'
+    required: false
+
 branding:
   icon: "eye"
   color: "purple"
