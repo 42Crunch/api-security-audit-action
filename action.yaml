@@ -40,7 +40,10 @@ inputs:
     description: "Change the default collection name"
     required: false
   json-report:
-    description: 'Writes Audit report in JSON format to a specified file'
+    description: "Writes Audit report in JSON format to a specified file"
+    required: false
+  api-tag:
+    description: "Tag for the APIs in the format \"category:name\", optional."
     required: false
 
 branding:
