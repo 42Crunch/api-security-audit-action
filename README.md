@@ -102,6 +102,14 @@ Level of details in the logs, one of: `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`.
 
 Automatically share new API collections with everyone in your organization in 42Crunch Platform. Accepted values are: `OFF`, `READ_ONLY`, `READ_WRITE`. Default is `OFF`.
 
+### `json-report`
+
+Writes Audit report in JSON format to a specified file, optional. Default: `undefined`, no report is written.
+
+### `api-tag`
+
+Specify tag for API will be assigned, format "Category:name". Default: `undefined`, API tag unchanged.
+
 ## Prerequisites
 
 Create an API token in 42Crunch Platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.

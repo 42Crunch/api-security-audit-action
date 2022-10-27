@@ -118,6 +118,8 @@ function getReference(): Reference | undefined {
     const defaultCollectionName = core.getInput("default-collection-name", {
       required: false,
     });
+    const writeJsonReportTo = core.getInput("json-report", { required: false });
+    const api_tag = core.getInput("api-tag", { required: false });
     const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
 
     const reference = getReference();
@@ -154,6 +156,8 @@ function getReference(): Reference | undefined {
       minScore,
       shareEveryone,
       defaultCollectionName,
+      writeJsonReportTo,
+      api_tag,
     });
 
     if (uploadToCodeScanning !== "false") {
