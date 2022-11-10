@@ -119,7 +119,7 @@ function getReference(): Reference | undefined {
       required: false,
     });
     const writeJsonReportTo = core.getInput("json-report", { required: false });
-    const api_tag = core.getInput("api-tag", { required: false });
+    const api_tags = core.getInput("api-tags", { required: false });
     const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
 
     const reference = getReference();
@@ -157,7 +157,7 @@ function getReference(): Reference | undefined {
       shareEveryone,
       defaultCollectionName,
       writeJsonReportTo,
-      api_tag,
+      api_tags,
     });
 
     if (uploadToCodeScanning !== "false") {

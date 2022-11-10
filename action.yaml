@@ -42,8 +42,8 @@ inputs:
   json-report:
     description: "Writes Audit report in JSON format to a specified file"
     required: false
-  api-tag:
-    description: "Tag for the APIs in the format \"category:name\", optional."
+  api-tags:
+    description: "Set tags for newly created APIs. Format \"category1:name1 category2:name2\", optional."
     required: false
 
 branding:
