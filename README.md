@@ -106,9 +106,9 @@ Automatically share new API collections with everyone in your organization in 42
 
 Writes Audit report in JSON format to a specified file, optional. Default: `undefined`, no report is written.
 
-### `api-tag`
+### `api-tags`
 
-Specify tag for API will be assigned, format "Category:name". Default: `undefined`, API tag unchanged.
+Specify tag for new API will be assigned, format "Categor1y:name1 Category2:name2". Default: `undefined`, API tag unchanged.
 
 ## Prerequisites
 
