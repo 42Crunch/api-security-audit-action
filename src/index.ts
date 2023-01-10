@@ -120,6 +120,10 @@ function getReference(): Reference | undefined {
     });
     const writeJsonReportTo = core.getInput("json-report", { required: false });
     const api_tags = core.getInput("api-tags", { required: false });
+    const skipLocalChecks =
+      core.getInput("skip-local-checks", {
+        required: false,
+      }) === "true";
     const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
 
     const reference = getReference();
@@ -158,6 +162,7 @@ function getReference(): Reference | undefined {
       defaultCollectionName,
       writeJsonReportTo,
       api_tags,
+      skipLocalChecks,
     });
 
     if (uploadToCodeScanning !== "false") {
@@ -168,16 +173,24 @@ function getReference(): Reference | undefined {
 
     if (ignoreFailures == "false") {
       if (result!.failures > 0) {
-        core.setFailed(`Completed with ${result!.failures} failure(s)`);
+        throw new Error(`Completed with ${result!.failures} failure(s)`);
       } else if (result.files.size === 0) {
-        core.setFailed("No OpenAPI files found");
+        throw new Error("No OpenAPI files found");
       }
     } else {
       core.info("Configued to ignore failures");
     }
   } catch (ex) {
-    core.setFailed(
-      `Error: ${ex.message} ${(ex?.code || "", ex?.response?.body || "")}`
-    );
+    if (
+      core.getInput("force-ignore-all-failures") === "true" ||
+      (core.getInput("force-ignore-network-failures") === "true" &&
+        ex?.networkFailure === true)
+    ) {
+      core.info(ex.message);
+    } else {
+      core.setFailed(
+        `Error: ${ex.message} ${(ex?.code || "", ex?.response?.body || "")}`
+      );
+    }
   }
 })();
