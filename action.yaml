@@ -30,7 +30,7 @@ inputs:
     required: false
     default: "false"
   ignore-failures:
-    description: "Do not fail the action even if the faiures were detected in the API contract"
+    description: "Do not fail the action even if the failures were detected in the API contract"
     required: false
     default: "false"
   root-directory:
@@ -46,11 +46,11 @@ inputs:
     description: "Set tags for newly created APIs. Format \"category1:name1 category2:name2\", optional."
     required: false
   ignore-network-errors:
-    description: "Do not fail the action even if network error was throw"
+    description: "Do not fail the action in case of network errors"
     required: false
     default: "false"
   skip-local-checks:
-    description: "Will disable all local checks, such as invalid contract, score, fail_on conditions in 42c-conf.yaml and will only check failures reported by SQGs"
+    description: "Ignore all local checks, such as low API score, \"fail_on\" conditions in 42c-conf.yaml and only check the failures reported by SQGs"
     required: false
     default: "false"
 branding:
