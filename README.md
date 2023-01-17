@@ -82,11 +82,11 @@ This parameter can be useful if you do not use the GitHub action for CI/CD or pu
 
 ### `ignore-network-errors`
 
-If set to 'true', forces to complete execution successfully even if a network error has occurred (such as a failure to connect to 4unch Platform, etc). Default is false.
+If set to `true`, forces to complete execution successfully even if a network error has occurred (such as a failure to connect to 4unch Platform, etc). Default is `false`.
 
 ### `skip-local-checks`
 
-If set to 'true', disables all local failure conditions (like minimum score) and fails execution only if the criteria defined in SQGs are not met. Default is false.
+If set to `true`, disables all local failure conditions (like minimum score) and fails execution only if the criteria defined in SQGs are not met. Default is `false`.
 
 ### `platform-url`
 
