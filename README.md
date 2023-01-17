@@ -76,9 +76,17 @@ Upload the audit results to [Github Code Scanning](https://docs.github.com/en/gi
 
 ### `ignore-failures`
 
-If you set this to `true`, the action does not fail even if the failures conditions (like `min-score`) you have set are met. Default is `false`.
+If set to `true`, forces to complete execution successfully even if the failures conditions (like min-score or SQG criteria) you have set are met. Default is `false`.
 
 This parameter can be useful if you do not use the GitHub action for CI/CD or pull request scenarios, but simply want it to keep updating Code Scanning alerts on each code change.
+
+### `ignore-network-errors`
+
+If set to 'true', forces to complete execution successfully even if a network error has occurred (such as a failure to connect to 4unch Platform, etc). Default is false.
+
+### `skip-local-checks`
+
+If set to 'true', disables all local failure conditions (like minimum score) and fails execution only if the criteria defined in SQGs are not met. Default is false.
 
 ### `platform-url`
 
@@ -108,7 +116,7 @@ Writes Audit report in JSON format to a specified file, optional. Default: `unde
 
 ### `api-tags`
 
-Specify tag for new API will be assigned, format "Categor1y:name1 Category2:name2". Default: `undefined`, API tag unchanged.
+List of tags to be set on the newly created APIs. Tags are specified in the following format: "category1:name1 category2:name2", optional.
 
 ## Prerequisites
 

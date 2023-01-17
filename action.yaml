@@ -30,7 +30,7 @@ inputs:
     required: false
     default: "false"
   ignore-failures:
-    description: "Do not fail the action even if the failures were detected in the API contract"
+    description: "If set to 'true', disables all local failure conditions (like minimum score) and fails execution only if the criteria defined in SQGs are not met."
     required: false
     default: "false"
   root-directory:
@@ -43,14 +43,14 @@ inputs:
     description: "Writes Audit report in JSON format to a specified file"
     required: false
   api-tags:
-    description: "Set tags for newly created APIs. Format \"category1:name1 category2:name2\", optional."
+    description: "List of tags to be set on the newly created APIs. Format \"category1:name1 category2:name2\", optional."
     required: false
   ignore-network-errors:
-    description: "Do not fail the action in case of network errors"
+    description: "If set to 'true', forces to complete execution successfully even if a network error has occurred (such as a failure to connect to 4unch Platform, etc)."
     required: false
     default: "false"
   skip-local-checks:
-    description: "Ignore all local checks, such as low API score, \"fail_on\" conditions in 42c-conf.yaml and only check the failures reported by SQGs"
+    description: "If set to 'true', forces to complete execution successfully even if the failures conditions (like min-score or SQG criteria) you have set are met."
     required: false
     default: "false"
 branding:
