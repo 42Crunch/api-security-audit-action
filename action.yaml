@@ -45,7 +45,14 @@ inputs:
   api-tags:
     description: "Set tags for newly created APIs. Format \"category1:name1 category2:name2\", optional."
     required: false
-
+  ignore-network-errors:
+    description: "Do not fail the action even if network error was throw"
+    required: false
+    default: "false"
+  skip-local-checks:
+    description: "Will disable all local checks, such as invalid contract, score, fail_on conditions in 42c-conf.yaml and will only check failures reported by SQGs"
+    required: false
+    default: "false"
 branding:
   icon: "eye"
   color: "purple"

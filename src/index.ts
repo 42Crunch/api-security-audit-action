@@ -102,6 +102,7 @@ function getReference(): Reference | undefined {
 }
 
 (async () => {
+  const ignoreNetworkErrors = core.getInput("ignore-network-errors") === "true";
   try {
     const githubServerUrl = env("GITHUB_SERVER_URL");
     const githubRepository = env("GITHUB_REPOSITORY");
@@ -110,7 +111,7 @@ function getReference(): Reference | undefined {
     const uploadToCodeScanning = core.getInput("upload-to-code-scanning", {
       required: true,
     });
-    const ignoreFailures = core.getInput("ignore-failures", { required: true });
+    const ignoreFailures = core.getInput("ignore-failures") === "true";
     const userAgent = `GithubAction-CICD/2.0`;
     const platformUrl = core.getInput("platform-url", { required: true });
     const logLevel = core.getInput("log-level", { required: true });
@@ -120,6 +121,7 @@ function getReference(): Reference | undefined {
     });
     const writeJsonReportTo = core.getInput("json-report", { required: false });
     const api_tags = core.getInput("api-tags", { required: false });
+    const skipLocalChecks = core.getInput("skip-local-checks") === "true";
     const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
 
     const reference = getReference();
@@ -137,6 +139,13 @@ function getReference(): Reference | undefined {
       },
       undefined
     );
+
+    if (ignoreNetworkErrors) {
+      core.info("Ignoring network errors");
+    }
+    if (ignoreFailures) {
+      core.info("Ignoring security audit failures");
+    }
 
     const rootDir = resolve(process.cwd(), rootDirectory || ".");
 
@@ -158,6 +167,7 @@ function getReference(): Reference | undefined {
       defaultCollectionName,
       writeJsonReportTo,
       api_tags,
+      skipLocalChecks,
     });
 
     if (uploadToCodeScanning !== "false") {
@@ -166,18 +176,20 @@ function getReference(): Reference | undefined {
       await uploadSarif(sarif);
     }
 
-    if (ignoreFailures == "false") {
+    if (!ignoreFailures) {
       if (result!.failures > 0) {
-        core.setFailed(`Completed with ${result!.failures} failure(s)`);
+        throw new Error(`Completed with ${result!.failures} failure(s)`);
       } else if (result.files.size === 0) {
-        core.setFailed("No OpenAPI files found");
+        throw new Error("No OpenAPI files found");
       }
-    } else {
-      core.info("Configued to ignore failures");
     }
   } catch (ex) {
-    core.setFailed(
-      `Error: ${ex.message} ${(ex?.code || "", ex?.response?.body || "")}`
-    );
+    if (ignoreNetworkErrors && ex?.isNetworkError === true) {
+      core.info(ex.message);
+    } else {
+      core.setFailed(
+        `Error: ${ex.message} ${(ex?.code || "", ex?.response?.body || "")}`
+      );
+    }
   }
 })();
