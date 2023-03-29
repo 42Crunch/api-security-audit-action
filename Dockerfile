@@ -1,9 +1,9 @@
-FROM node:18.12.1-alpine3.16 AS builder
+FROM node:18.15.0-alpine3.17 AS builder
 COPY . /build
 WORKDIR /build
 RUN npm ci && npm run build && npm prune --production
 
-FROM node:18.12.1-alpine3.16
+FROM node:18.15.0-alpine3.17
 ENV NODE_ENV=production
 RUN apk add --no-cache tini
 
