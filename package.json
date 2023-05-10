@@ -2,7 +2,8 @@
   "name": "api-security-audit-action",
   "version": "0.0.0",
   "description": "Performs API contract security audit to get a detailed analysis of the possible vulnerabilities and other issues in the API contract.",
-  "main": "index.js",
+  "main": "index.mjs",
+  "type": "module",
   "scripts": {
     "build": "tsc"
   },
@@ -16,13 +17,13 @@
     "@actions/core": "^1.10.0",
     "@octokit/core": "^4.1.0",
     "@types/turndown": "^5.0.0",
-    "@xliic/cicd-core-node": "5.25.1",
-    "got": "^11.8.5",
+    "@xliic/cicd-core-node": "5.28.0",
+    "got": "^12.6.0",
     "turndown": "^7.1.1"
   },
   "devDependencies": {
     "@types/got": "^9.6.12",
-    "@types/node": "^14.14.21",
-    "typescript": "^4.2.2"
+    "@types/node": "^18.16.0",
+    "typescript": "^5.0.4"
   }
 }

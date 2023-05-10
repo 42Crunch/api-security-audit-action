@@ -6,13 +6,9 @@
 import { resolve } from "path";
 import * as core from "@actions/core";
 import { audit } from "@xliic/cicd-core-node";
-import { produceSarif } from "./sarif";
-import { uploadSarif } from "./upload";
-import {
-  Logger,
-  Reference,
-  SharingType,
-} from "@xliic/cicd-core-node/lib/types";
+import { produceSarif } from "./sarif.mjs";
+import { uploadSarif } from "./upload.mjs";
+import { Logger, Reference, SharingType } from "@xliic/cicd-core-node";
 
 function logger(levelName: string): Logger {
   const levels = {

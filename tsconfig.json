@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
+    "target": "ES2021",
+    "module": "ES2020",
     "strict": false,
-    "module": "commonjs",
     "esModuleInterop": true,
-    "target": "es6",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "sourceMap": true,
     "outDir": "dist",
-    "resolveJsonModule": true
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", ".vscode-test"]

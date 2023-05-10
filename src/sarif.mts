@@ -5,7 +5,7 @@
 
 import * as url from "url";
 import { resolve } from "path";
-import { FileAuditMap } from "@xliic/cicd-core-node/lib/types";
+import { FileAuditMap } from "@xliic/cicd-core-node";
 import TurndownService from "turndown";
 import got from "got";
 
