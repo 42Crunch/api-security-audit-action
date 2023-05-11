@@ -12,4 +12,4 @@ COPY --from=builder /build/package.json /action
 COPY --from=builder /build/node_modules /action/node_modules
 COPY --from=builder /build/dist /action/dist
 
-ENTRYPOINT [ "/sbin/tini", "--", "node", "/action/dist/index.js" ]
+ENTRYPOINT [ "/sbin/tini", "--", "node", "/action/dist/index.mjs" ]
