@@ -3,12 +3,13 @@
  Licensed under the GNU Affero General Public License version 3. See LICENSE.txt in the project root for license information.
 */
 
-import { resolve } from "path";
+import { extname, resolve } from "path";
 import * as core from "@actions/core";
 import { audit } from "@xliic/cicd-core-node";
-import { produceSarif } from "./sarif.mjs";
+import { produceSarif, Sarif } from "./sarif.mjs";
 import { uploadSarif } from "./upload.mjs";
 import { Logger, Reference, SharingType } from "@xliic/cicd-core-node";
+import { existsSync, writeFileSync } from "fs";
 
 function logger(levelName: string): Logger {
   const levels = {
@@ -97,6 +98,23 @@ function getReference(): Reference | undefined {
   }
 }
 
+function checkPath(rootDir: string, path: string, extention: string = ""){
+  let absolutePath = resolve(rootDir, path);
+
+  const ext = extname(absolutePath);
+  if (ext === "") {
+    absolutePath += `.${extention}`;
+  }
+
+  if (existsSync(absolutePath)) {
+    throw new Error(
+      `File ${absolutePath} alredy exist`
+    );
+  }
+
+  return absolutePath;
+}
+
 (async () => {
   const ignoreNetworkErrors = core.getInput("ignore-network-errors") === "true";
   try {
@@ -119,6 +137,9 @@ function getReference(): Reference | undefined {
     const api_tags = core.getInput("api-tags", { required: false });
     const skipLocalChecks = core.getInput("skip-local-checks") === "true";
     const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
+    const sarifReport = core.getInput("sarif-report", { required: false });
+
+    const needSarif = uploadToCodeScanning !== "false" || Boolean(sarifReport)
 
     const reference = getReference();
     if (!reference) {
@@ -154,7 +175,7 @@ function getReference(): Reference | undefined {
         "https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm",
       platformUrl,
       logger: logger(logLevel),
-      lineNumbers: uploadToCodeScanning !== "false",
+      lineNumbers: needSarif,
       reference,
       repoName: repositoryUrl,
       cicdName: "github",
@@ -166,10 +187,25 @@ function getReference(): Reference | undefined {
       skipLocalChecks,
     });
 
-    if (uploadToCodeScanning !== "false") {
-      core.info("Uploading results to Code Scanning");
-      const sarif = await produceSarif(result.files);
-      await uploadSarif(sarif);
+    if(needSarif){
+      const sarif: Sarif  = await produceSarif(result.files);
+
+      if(sarifReport){
+        try {
+          const sarifPath = checkPath(rootDir, sarifReport, "sarif");
+          writeFileSync(sarifPath, JSON.stringify(sarif, null, 4));
+          core.info(`SARIF report was written to: "${sarifPath}"`);
+        } catch (e) {
+          core.setFailed(
+            `Can't write SARIF report\n ${e}`
+          );
+        }
+      }
+
+      if (uploadToCodeScanning !== "false") {
+        core.info("Uploading results to Code Scanning");
+        await uploadSarif(sarif);
+      }
     }
 
     if (!ignoreFailures) {
@@ -184,7 +220,7 @@ function getReference(): Reference | undefined {
       core.info(ex.message);
     } else {
       core.setFailed(
-        `Error: ${ex.message} ${(ex?.code || "", ex?.response?.body || "")}`
+        `${ex.message} ${(ex?.code || "", ex?.response?.body || "")}`
       );
     }
   }

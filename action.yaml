@@ -52,6 +52,9 @@ inputs:
   skip-local-checks:
     description: "If set to 'true', forces to complete execution successfully even if the failures conditions (like min-score or SQG criteria) you have set are met."
     required: false
+  sarif-report:
+    description: "Writes SARIF report to a specified file"
+    required: false
     default: "false"
 branding:
   icon: "eye"

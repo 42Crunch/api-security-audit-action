@@ -118,6 +118,10 @@ Writes Audit report in JSON format to a specified file, optional. Default: `unde
 
 List of tags to be set on the newly created APIs. Tags are specified in the following format: "category1:name1 category2:name2", optional.
 
+### `sarif-report`
+
+Writes SARIF report to a specified file, optional. Default: `undefined`, no report is written.
+
 ## Prerequisites
 
 Create an API token in 42Crunch Platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.
