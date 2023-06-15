@@ -122,6 +122,10 @@ List of tags to be set on the newly created APIs. Tags are specified in the foll
 
 Writes SARIF report to a specified file, optional. Default: `undefined`, no report is written.
 
+### `audit-timeout`
+
+Set the maximum timeout (in seconds) for the audit report. Fail if the result isn't ready within that interval. Default: 600
+
 ## Prerequisites
 
 Create an API token in 42Crunch Platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.

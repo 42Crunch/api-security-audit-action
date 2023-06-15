@@ -298,7 +298,6 @@ export async function produceSarif(summary: FileAuditMap): Promise<Sarif> {
     sarifLog.runs[0].artifacts = [];
 
     Object.keys(sarifFiles).forEach(function (path) {
-      console.log()
       sarifLog.runs[0].artifacts.push(sarifFiles[path]);
     });
   }

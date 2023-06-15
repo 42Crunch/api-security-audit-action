@@ -68,6 +68,18 @@ function getInputValue(input: string, options: any, defaultValue: any): any {
   return defaultValue;
 }
 
+function getInputNumber(input: string): number {
+  const inputValue = core.getInput(input, { required: false });
+  if (inputValue === undefined){
+    return undefined;
+  }
+  const value = Number.parseInt(inputValue);
+  if(isNaN(value)) {
+    throw new Error(`Failed to parse integer value for input "${input}"`);
+  }
+  return value;
+}
+
 function env(name: string): string {
   if (typeof process.env[name] === "undefined") {
     throw new Error(`Environment variable ${name} is not set`);
@@ -138,8 +150,8 @@ function checkPath(rootDir: string, path: string, extention: string = ""){
     const skipLocalChecks = core.getInput("skip-local-checks") === "true";
     const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
     const sarifReport = core.getInput("sarif-report", { required: false });
-
-    const needSarif = uploadToCodeScanning !== "false" || Boolean(sarifReport)
+    const auditTimeout = getInputNumber("audit-timeout");
+    const needSarif = uploadToCodeScanning !== "false" || !!sarifReport
 
     const reference = getReference();
     if (!reference) {
@@ -185,6 +197,7 @@ function checkPath(rootDir: string, path: string, extention: string = ""){
       writeJsonReportTo,
       api_tags,
       skipLocalChecks,
+      assessmentMaxWaitTime : auditTimeout ? auditTimeout*1000 : undefined
     });
 
     if(needSarif){
