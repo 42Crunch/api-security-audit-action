@@ -70,7 +70,7 @@ function getInputValue(input: string, options: any, defaultValue: any): any {
 
 function getInputNumber(input: string): number {
   const inputValue = core.getInput(input, { required: false });
-  if (inputValue === undefined){
+  if (inputValue === undefined || inputValue === ""){
     return undefined;
   }
   const value = Number.parseInt(inputValue);
