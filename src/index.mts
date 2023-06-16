@@ -75,7 +75,7 @@ function getInputNumber(input: string): number {
   }
   const value = Number.parseInt(inputValue);
   if(isNaN(value)) {
-    throw new Error(`Failed to parse integer value for input "${input}"`);
+    throw new Error(`Failed to parse integer value for input "${input}", original input value is "${inputValue}"`);
   }
   return value;
 }
