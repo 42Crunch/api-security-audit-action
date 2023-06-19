@@ -1,1 +1,1 @@
-FROM 42crunch/github-api-security-audit:v3.6.0rc0
+FROM 42crunch/github-api-security-audit:v3.7.0
