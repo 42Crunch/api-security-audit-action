@@ -88,13 +88,13 @@ export async function getArticles(): Promise<any> {
 
 function getResultLevel(
   issue
-): "notApplicable" | "pass" | "note" | "warning" | "error" | "open" {
+): string {
   const criticalityToSeverity = {
-    1: "note",
-    2: "note",
-    3: "warning",
-    4: "error",
-    5: "error",
+    1: "2",
+    2: "5",
+    3: "6",
+    4: "8",
+    5: "9.5",
   };
 
   return criticalityToSeverity[issue.criticality];
@@ -178,7 +178,7 @@ export async function produceSarif(summary: FileAuditMap): Promise<Sarif> {
         }
 
         const sarifRepresentation: Result = {
-          level: getResultLevel(issue),
+          // level: getResultLevel(issue),
           ruleId: issue.id,
           message: {
             text: issue.description,
@@ -210,7 +210,7 @@ export async function produceSarif(summary: FileAuditMap): Promise<Sarif> {
             const version = issue.id.startsWith("v3-") ? "oasv3" : "oasv2";
             const group = article.group;
             const subgroup = article.subgroup;
-            helpUrl = `https://apisecurity.io/encyclopedia/content/${version}/${group}/${subgroup}/${issue.id}.htm`;
+            helpUrl = `https://docs.42crunch.com/latest/content/${version}/${group}/${subgroup}/${issue.id}.htm`;
           }
 
           const helpText = turndownService.turndown(
@@ -229,6 +229,7 @@ export async function produceSarif(summary: FileAuditMap): Promise<Sarif> {
             },
             properties: {
               category: "Other", //meta.docs.category,
+              "security-severity": getResultLevel(issue)
             },
           };
         }
