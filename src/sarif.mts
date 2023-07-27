@@ -5,7 +5,7 @@
 
 import * as url from "url";
 import { resolve } from "path";
-import { FileAuditMap } from "@xliic/cicd-core-node";
+import { FileAuditMap, Issue } from "@xliic/cicd-core-node";
 import TurndownService from "turndown";
 import got from "got";
 
@@ -86,8 +86,8 @@ export async function getArticles(): Promise<any> {
   }
 }
 
-function getResultLevel(
-  issue
+function getResultSeverity(
+  issue: Issue
 ): string {
   const criticalityToSeverity = {
     1: "2",
@@ -99,6 +99,22 @@ function getResultLevel(
 
   return criticalityToSeverity[issue.criticality];
 }
+
+function getResultLevel(
+  issue: Issue
+): "notApplicable" | "pass" | "note" | "warning" | "error" | "open" {
+  const criticalityToSeverity = {
+    1: "note",
+    2: "note",
+    3: "warning",
+    4: "error",
+    5: "error",
+  };
+
+  return criticalityToSeverity[issue.criticality];
+}
+
+
 
 const fallbackArticle = {
   description: {
@@ -178,7 +194,7 @@ export async function produceSarif(summary: FileAuditMap): Promise<Sarif> {
         }
 
         const sarifRepresentation: Result = {
-          // level: getResultLevel(issue),
+          level: getResultLevel(issue),
           ruleId: issue.id,
           message: {
             text: issue.description,
@@ -229,7 +245,7 @@ export async function produceSarif(summary: FileAuditMap): Promise<Sarif> {
             },
             properties: {
               category: "Other", //meta.docs.category,
-              "security-severity": getResultLevel(issue)
+              "security-severity": getResultSeverity(issue)
             },
           };
         }
