@@ -5,7 +5,7 @@
 
 import * as url from "url";
 import { resolve } from "path";
-import { FileAuditMap } from "@xliic/cicd-core-node";
+import { FileAuditMap, Issue } from "@xliic/cicd-core-node";
 import TurndownService from "turndown";
 import got from "got";
 
@@ -86,8 +86,22 @@ export async function getArticles(): Promise<any> {
   }
 }
 
+function getResultSeverity(
+  issue: Issue
+): string {
+  const criticalityToSeverity = {
+    1: "2",
+    2: "5",
+    3: "6",
+    4: "8",
+    5: "9.5",
+  };
+
+  return criticalityToSeverity[issue.criticality];
+}
+
 function getResultLevel(
-  issue
+  issue: Issue
 ): "notApplicable" | "pass" | "note" | "warning" | "error" | "open" {
   const criticalityToSeverity = {
     1: "note",
@@ -99,6 +113,8 @@ function getResultLevel(
 
   return criticalityToSeverity[issue.criticality];
 }
+
+
 
 const fallbackArticle = {
   description: {
@@ -210,7 +226,7 @@ export async function produceSarif(summary: FileAuditMap): Promise<Sarif> {
             const version = issue.id.startsWith("v3-") ? "oasv3" : "oasv2";
             const group = article.group;
             const subgroup = article.subgroup;
-            helpUrl = `https://apisecurity.io/encyclopedia/content/${version}/${group}/${subgroup}/${issue.id}.htm`;
+            helpUrl = `https://docs.42crunch.com/latest/content/${version}/${group}/${subgroup}/${issue.id}.htm`;
           }
 
           const helpText = turndownService.turndown(
@@ -229,6 +245,7 @@ export async function produceSarif(summary: FileAuditMap): Promise<Sarif> {
             },
             properties: {
               category: "Other", //meta.docs.category,
+              "security-severity": getResultSeverity(issue)
             },
           };
         }
