@@ -129,7 +129,7 @@ function articleById(articles: any, id: string) {
       return "";
     }
     return part.sections
-      .map((section) => `${section.text || ""}${section?.code?.json || ""}`)
+      .map((section) => `${section.text || ""}${formatCode(section?.code?.json)}`)
       .join("");
   }
 
@@ -143,6 +143,13 @@ function articleById(articles: any, id: string) {
   ].join("");
 }
 
+function formatCode(code: string | undefined): string {
+  if(code === undefined) {
+    return "";
+  }
+  return `<pre><code>${code}</code></pre>`;
+}
+
 export async function produceSarif(summary: FileAuditMap): Promise<Sarif> {
   const sarifResults: Result[] = [];
   const sarifFiles = {};
@@ -153,7 +160,8 @@ export async function produceSarif(summary: FileAuditMap): Promise<Sarif> {
   const sarifArtifactIndices = {};
   let nextArtifactIndex = 0;
 
-  const turndownService = new TurndownService();
+  // @ts-ignore
+  const turndownService = new TurndownService({preformattedCode: true});
 
   const articles = await getArticles();
 
