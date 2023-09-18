@@ -20,7 +20,7 @@ By default, this action will:
 
 This way, you can locate any new or changed API contracts in the repository.
 
-You can fine-tune how the action behaves by specifying specific parts of the repository or filename masks to be included or exclude in the discovery of APIs. You can even disable discovery completely and instead list only specific API files to be checked and map them to your existing APIs in 42Crunch API Security Platform. You configure all these settings in the configuration file `42c-conf.yaml`. For advanced examples, see [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
+You can fine-tune how the action behaves by specifying specific parts of the repository or filename masks to be included or excluded in the discovery of APIs. You can even disable discovery completely and instead list only specific API files to be checked and map them to your existing APIs in 42Crunch API Security Platform. You configure all these settings in the configuration file `42c-conf.yaml`. For advanced examples, see [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
 
 All discovered APIs are uploaded to an API collection in 42Crunch Platform. The action uses the environment variables `GITHUB_REPOSITORY` and `GITHUB_REF` to name the repository and the branch/tag/PR name from where the API collection originated from. During the subsequent action runs, the APIs in the collection are kept in sync with the changes in your repository.
 
