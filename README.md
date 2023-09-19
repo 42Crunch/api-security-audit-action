@@ -1,6 +1,6 @@
 # GitHub Action: 42Crunch REST API Static Security Testing
 
-The REST API Static Security Testing action locates REST API contracts that follow the OpenAPI Specification (OAS, formerly known as Swagger) and runs thorough security checks on them. Both OAS v2 and v3 are supported, in both JSON and YAML format.
+The REST API Static Security Testing action locates REST API contracts that follow the OpenAPI Specification (OAS, formerly known as Swagger) and runs thorough security checks on them. Both OAS v2 and v3.0.x are supported, in both JSON and YAML format.
 
 You can use this action in the following scenarios:
 
@@ -28,11 +28,13 @@ All discovered APIs are uploaded to an API collection in 42Crunch Platform. The 
 
 Add this action to your CI/CD workflows in GitHub and have it fail on API definitions that contain security issues.
 
-Security Audit gives each API contract an audit score from 0 to 100 reflecting the security surface of your APIs. You can use he `min-score` parameter of the GitHub Action to set the threshold for the audit score where the action fails (the default is `75`, if no other value is specified). This helps to catch APIs definitions of bad quality and address the issues as early as design time. Additionally, the plugin will enforce Security Quality gates defined at the platform level (default or tag-driven ones). Security quality gates describe the application security requirements within an enterprise.
+Security Audit gives each API contract an audit score from 0 to 100 reflecting the security surface of your APIs. You can use the `min-score` parameter of the GitHub Action to set the threshold for the audit score where the action fails (the default is `75`, if no other value is specified). This helps to catch APIs definitions of bad quality and address the issues as early as design time. 
 
 More advanced failure conditions can be set in the configuration file `42c-conf.yaml`, such as audit score by category (security or data validation), severity level of issues, or even specific issues, specified by their issue ID. For advanced examples, see [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
 
-## Read detailed actionable reports
+Additionally, the plugin enforces Security Quality gates defined at the platform level (default or tag-driven ones). Security quality gates describe the application security requirements within the enterprise.
+
+## Reading detailed actionable reports
 
 Each time the action runs, it includes a link to the detailed prioritized actionable report for each of your OpenAPI files:
 
@@ -102,7 +104,7 @@ If set to `true`, disables all failure conditions (like minimum score) set in th
 
 The URL where you access 42Crunch Platform URL. Default is `https://platform.42crunch.com`.
 
-If you are an enterprise customer, enter the URL you use to access the platform.
+If you are an enterprise customer, enter the URL you use to access your production platform.
 
 ### `root-directory`
 
@@ -118,11 +120,11 @@ Level of details in the logs, one of: `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`.
 
 ### `share-everyone`
 
-Automatically shares API collections created by the CI/CD task with everyone in your organization on the 42Crunch Platform. Accepted values are: `OFF`, `READ_ONLY`, `READ_WRITE`. Default is `OFF`. Note that the identity the action unders run (the owner of the API token) must have the `Share with Everyone` permission, otherwise the task will fail with a 403 error.
+Automatically shares API collections created by the CI/CD task with everyone in your organization on the 42Crunch platform. Accepted values are: `OFF`, `READ_ONLY`, `READ_WRITE`. Default is `OFF`. Note that the identity the action runs under (the owner of the API token) must have the `Share with Everyone` permission, otherwise the task will fail with a 403 error.
 
 ### `json-report`
 
-Writes audit execution report in JSON format to a specified file, optional. Default: `undefined`, no report is written. An [execution report](https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm#scrollNav-4) details the list of APIs that where created, updated and deleted. This is useful if you want to automatically consume the results of the audit execution in a subsequent pipeline step .
+Writes an audit execution report in JSON format to the specified file. An [execution report](https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm#scrollNav-4) details the list of APIs that were created, updated and deleted. This is useful if you want to automatically consume the results of the audit execution in a subsequent pipeline step. By default, no report is written.
 
 ### `api-tags`
 
@@ -130,15 +132,15 @@ The CI/CD task can automatically assign tags to newly created APIs. Tags are spe
 
 ### `sarif-report`
 
-Converts the audit raw JSON format to SARIF and save the results into a specified file. By default, no report is written.
+Converts the audit raw JSON format to SARIF and save the results into the specified file. By default, no report is written.
 
 ### `audit-timeout`
 
-Sets the maximum timeout (in seconds) for the audit report. Fail if the result isn't ready within that interval. Default: `600`
+Sets the maximum timeout (in seconds) for the audit report. The task will fail if the result isn't ready within that interval. Default: `600`
 
 ## Prerequisites
 
-Create an API token in 42Crunch Platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.
+Create an API token on the 42Crunch Platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.
 
 ## Example usage
 
@@ -184,7 +186,7 @@ jobs:
           pr_id=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
           echo "PR_ID=$pr_id" >> $GITHUB_OUTPUT
       - name: 42crunch-static-api-testing
-        uses: 42Crunch/api-security-audit-action@v3.8.0
+        uses: 42Crunch/api-security-audit-action@v3
         with:
           api-token: ${{ secrets.API_TOKEN }}
           platform-url: ${{ env.PLATFORM_URL}}
@@ -205,10 +207,9 @@ jobs:
 
 ## Support
 
-The action is maintained by support@42crunch.com. If you run into an issue, or have a question not answered here, you can create a support ticket at [support.42crunch.com](https://support.42crunch.com/).
+The action is maintained by the 42Crunch Ecosystems team. If you run into an issue, or have a question not answered here, you can create a support ticket at [support.42crunch.com](https://support.42crunch.com/).
 
 When reporting an issue, do include:
-
 - The version of the GitHub action
 - Relevant logs and error messages
 - Steps to reproduce the issue
