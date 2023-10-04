@@ -32,7 +32,7 @@ Security Audit gives each API contract an audit score from 0 to 100 reflecting t
 
 More advanced failure conditions can be set in the configuration file `42c-conf.yaml`, such as audit score by category (security or data validation), severity level of issues, or even specific issues, specified by their issue ID. For advanced examples, see [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
 
-Additionally, the plugin enforces Security Quality gates defined at the platform level (default or tag-driven ones). Security quality gates describe the application security requirements within the enterprise.
+Additionally, the plugin enforces security quality gates defined at the platform level (default or tag-driven ones). Security quality gates describe the application security requirements within the enterprise.
 
 ## Reading detailed actionable reports
 
@@ -120,7 +120,7 @@ Level of details in the logs, one of: `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`.
 
 ### `share-everyone`
 
-Automatically shares API collections created by the CI/CD task with everyone in your organization on the 42Crunch platform. Accepted values are: `OFF`, `READ_ONLY`, `READ_WRITE`. Default is `OFF`. Note that the identity the action runs under (the owner of the API token) must have the `Share with Everyone` permission, otherwise the task will fail with a 403 error.
+Automatically shares API collections created by the CI/CD task with everyone in your organization on 42Crunch Platform. Accepted values are: `OFF`, `READ_ONLY`, `READ_WRITE`. Default is `OFF`. Note that the identity the action runs under (the owner of the API token) must have the `Share with Everyone` permission, otherwise the task will fail with a 403 error.
 
 ### `json-report`
 
