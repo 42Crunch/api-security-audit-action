@@ -4,11 +4,11 @@ The REST API Static Security Testing action locates REST API contracts that foll
 
 You can use this action in the following scenarios:
 
-- Add automatic static application security testing (SAST) task to your CI/CD workflows.
+- Add automatic static API security testing (SAST) task to your CI/CD workflows.
 - Perform these checks on pull request reviews and/or code merges.
 - Flag the located issues in GitHub's Security / Code Scanning Alerts.
 
-The action is powered by 42Crunch [API Security Audit](https://docs.42crunch.com/latest/content/concepts/api_contract_security_audit.htm). Security Audit performs a static analysis of the API definition that includes more than 300 checks on best practices and potential vulnerabilities related to authentication, authorization as well as data validation.
+The action is powered by 42Crunch [API Security Audit](https://docs.42crunch.com/latest/content/concepts/api_contract_security_audit.htm). Security Audit performs a static analysis of the API definition that includes more than 300 checks on best practices and potential vulnerabilities related to authentication, authorization as well as data constraints.
 
 ## Discover APIs in your repositories
 
@@ -22,7 +22,7 @@ This way, you can locate any new or changed API contracts in the repository.
 
 You can fine-tune how the action behaves by specifying specific parts of the repository or filename masks to be included or excluded in the discovery of APIs. You can even disable discovery completely and instead list only specific API files to be checked and map them to your existing APIs in 42Crunch API Security Platform. You configure all these settings in the configuration file `42c-conf.yaml`. For advanced examples, see [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
 
-All discovered APIs are uploaded to an API collection in 42Crunch Platform. The action uses the environment variables `GITHUB_REPOSITORY` and `GITHUB_REF` to name the repository and the branch/tag/PR name from where the API collection originated from. During the subsequent action runs, the APIs in the collection are kept in sync with the changes in your repository.
+All discovered APIs are uploaded to an API collection in 42Crunch Platform. By default, the action uses the environment variables `GITHUB_REPOSITORY` and `GITHUB_REF` to name the repository and the branch/tag/PR name from where the API collection originated from. You can override the name using the `default-collection-name` action parameter. During the subsequent runs, the APIs in the collection are kept in sync with the changes in your repository.
 
 ## Use this action to block deployment of vulnerable APIs
 
@@ -32,7 +32,7 @@ Security Audit gives each API contract an audit score from 0 to 100 reflecting t
 
 More advanced failure conditions can be set in the configuration file `42c-conf.yaml`, such as audit score by category (security or data validation), severity level of issues, or even specific issues, specified by their issue ID. For advanced examples, see [here](https://github.com/42Crunch/resources/tree/master/cicd/42c-conf-examples).
 
-Additionally, the plugin enforces security quality gates defined at the platform level (default or tag-driven ones). Security quality gates describe the application security requirements within the enterprise.
+Additionally, the plugin enforces [security quality gates](https://docs.42crunch.com/latest/content/concepts/security_quality_gates.htm) defined at the platform level (default or tag-driven ones). Security quality gates enforce the application security requirements defined within the enterprise.
 
 ## Reading detailed actionable reports
 
@@ -102,7 +102,7 @@ If set to `true`, disables all failure conditions (like minimum score) set in th
 
 ### `platform-url`
 
-The URL where you access 42Crunch Platform URL. Default is `https://platform.42crunch.com`.
+The URL where you access 42Crunch Platform. Default is `https://platform.42crunch.com`.
 
 If you are an enterprise customer, enter the URL you use to access your production platform.
 
@@ -142,30 +142,37 @@ Sets the maximum timeout (in seconds) for the audit report. The task will fail i
 
 Create an API token on the 42Crunch Platform and copy its value into a [repository secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) named `API_TOKEN`.
 
-## Example usage
+## Examples
+
+### Single Step Example
+A typical new step in an existing workflow would look like this:
 
 ```yaml
 - name: 42crunch-static-api-testing
         uses: 42Crunch/api-security-audit-action@v3
         with:
           api-token: ${{ secrets.API_TOKEN }}
-          platform-url: ${{ env.PLATFORM_URL}}
-          default-collection-name: GitHub-PixiBay-${{ steps.getprnumber.outputs.PR_ID }}
+          default-collection-name: GitHub-MyRepo-${{ github.ref_name }}
           log-level: info
           json-report: audit-action-report-${{ github.run_id }}
           sarif-report: 42Crunch_AuditReport_${{ github.run_id }}.SARIF
 ```
+### Full Workflow Example
 
 A typical workflow which checks the contents of the repository, runs Security Audit on each of the OpenAPI files found in the project and saves the execution file as artifact would look like this:
 
 ```yaml
-name: "pr-workflow"
+name: "42crunch-audit-workflow"
 
 # follow standard Code Scanning triggers
-on: 
+on:
+  push:
+    branches: [ "main" ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ main ]
+    branches: [ "main" ]
+  schedule:
+    - cron: '19 9 * * 6'
 
 env:
   PLATFORM_URL: https://platform.42crunch.com
@@ -180,19 +187,14 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
-      - name: get PR number
-        id: getprnumber
-        run: |
-          pr_id=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-          echo "PR_ID=$pr_id" >> $GITHUB_OUTPUT
       - name: 42crunch-static-api-testing
         uses: 42Crunch/api-security-audit-action@v3
         with:
           api-token: ${{ secrets.API_TOKEN }}
           platform-url: ${{ env.PLATFORM_URL}}
-          default-collection-name: Code-Scanning-${{ steps.getprnumber.outputs.PR_ID }}
+          default-collection-name: GitHub-MyRepo-${{ github.ref_name }}
           # Upload results to Github code scanning
-          upload-to-code-scanning: true
+          upload-to-code-scanning: false
           log-level: info
           json-report: audit-action-report-${{ github.run_id }}
           sarif-report: 42Crunch_AuditReport_${{ github.run_id }}.SARIF
