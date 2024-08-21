@@ -102,7 +102,7 @@ If set to `true`, disables all failure conditions (like minimum score) set in th
 
 ### `platform-url`
 
-The URL where you access 42Crunch Platform. Default is `https://platform.42crunch.com`.
+The URL where you access 42Crunch Platform. Default is `https://us.42crunch.cloud`.
 
 If you are an enterprise customer, enter the URL you use to access your production platform.
 
@@ -175,7 +175,7 @@ on:
     - cron: '19 9 * * 6'
 
 env:
-  PLATFORM_URL: https://platform.42crunch.com
+  PLATFORM_URL: https://us.42crunch.cloud
 
 jobs:
   run_42c_audit:

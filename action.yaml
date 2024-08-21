@@ -3,7 +3,7 @@ name: "42Crunch REST API Static Security Testing"
 description: "The REST API Static Security Testing action adds an automatic static application security testing (SAST) to your workflows"
 inputs:
   api-token:
-    description: "The API token to access 42Crunch Platform. Please create free account at https://platform.42crunch.com/register and follow hese steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm"
+    description: "The API token to access 42Crunch Platform. Follow hese steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm"
     required: false
   min-score:
     description: "Minimum score for OpenAPI files."
@@ -12,7 +12,7 @@ inputs:
   platform-url:
     description: "42Crunch platform URL"
     required: false
-    default: "https://platform.42crunch.com"
+    default: "https://us.42crunch.cloud"
   log-level:
     description: "Log level, one of: FATAL, ERROR, WARN, INFO, DEBUG"
     required: false
