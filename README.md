@@ -149,7 +149,7 @@ A typical new step in an existing workflow would look like this:
 
 ```yaml
 - name: 42crunch-static-api-testing
-        uses: 42Crunch/api-security-audit-action@v3
+        uses: 42Crunch/api-security-audit-action@v4
         with:
           api-token: ${{ secrets.API_TOKEN }}
           default-collection-name: GitHub-MyRepo-${{ github.ref_name }}
@@ -188,7 +188,7 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v3
       - name: 42crunch-static-api-testing
-        uses: 42Crunch/api-security-audit-action@v3
+        uses: 42Crunch/api-security-audit-action@v4
         with:
           api-token: ${{ secrets.API_TOKEN }}
           platform-url: ${{ env.PLATFORM_URL}}
