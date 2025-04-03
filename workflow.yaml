@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: 42Crunch REST API Static Security Testing
-        uses: 42Crunch/api-security-audit-action@v3
+        uses: 42Crunch/api-security-audit-action@v4
         with:
           # Follow these steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
           api-token: ${{ secrets.API_TOKEN }}
