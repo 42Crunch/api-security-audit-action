@@ -17,7 +17,7 @@
     "@actions/core": "^1.11.1",
     "@octokit/core": "^6.1.5",
     "@types/turndown": "^5.0.1",
-    "@xliic/cicd-core-node": "7.1.0",
+    "@xliic/cicd-core-node": "7.2.0",
     "got": "^14.4.1",
     "turndown": "^7.1.2"
   },
