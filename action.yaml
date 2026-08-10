@@ -60,6 +60,10 @@ inputs:
   audit-timeout:
     description: "Set the maximum timeout (in seconds) for the audit report. Fail if the result isn't ready within that interval."
     required: false
+  enable-graphql:
+    description: "If set to true, the action will scan GraphQL APIs in addition to REST APIs. If set to false, the action will only scan REST APIs."
+    required: false
+    default: "false"
 branding:
   icon: "eye"
   color: "purple"

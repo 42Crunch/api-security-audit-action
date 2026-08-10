@@ -62,7 +62,7 @@ function getInputValue(input: string, options: any, defaultValue: any): any {
   }
 
   console.log(
-    `Unexpected value for input "${input}" using default value instead`
+    `Unexpected value for input "${input}" using default value instead`,
   );
 
   return defaultValue;
@@ -70,12 +70,14 @@ function getInputValue(input: string, options: any, defaultValue: any): any {
 
 function getInputNumber(input: string): number {
   const inputValue = core.getInput(input, { required: false });
-  if (inputValue === undefined || inputValue === ""){
+  if (inputValue === undefined || inputValue === "") {
     return undefined;
   }
   const value = Number.parseInt(inputValue);
-  if(isNaN(value)) {
-    throw new Error(`Failed to parse integer value for input "${input}", original input value is "${inputValue}"`);
+  if (isNaN(value)) {
+    throw new Error(
+      `Failed to parse integer value for input "${input}", original input value is "${inputValue}"`,
+    );
   }
   return value;
 }
@@ -110,7 +112,7 @@ function getReference(): Reference | undefined {
   }
 }
 
-function checkPath(rootDir: string, path: string, extention: string = ""){
+function checkPath(rootDir: string, path: string, extention: string = "") {
   let absolutePath = resolve(rootDir, path);
 
   const ext = extname(absolutePath);
@@ -119,9 +121,7 @@ function checkPath(rootDir: string, path: string, extention: string = ""){
   }
 
   if (existsSync(absolutePath)) {
-    throw new Error(
-      `File ${absolutePath} alredy exist`
-    );
+    throw new Error(`File ${absolutePath} alredy exist`);
   }
 
   return absolutePath;
@@ -151,7 +151,8 @@ function checkPath(rootDir: string, path: string, extention: string = ""){
     const repositoryUrl = `${githubServerUrl}/${githubRepository}`;
     const sarifReport = core.getInput("sarif-report", { required: false });
     const auditTimeout = getInputNumber("audit-timeout");
-    const needSarif = uploadToCodeScanning !== "false" || !!sarifReport
+    const needSarif = uploadToCodeScanning !== "false" || !!sarifReport;
+    const enableGraphql = core.getInput("enable-graphql") === "true";
 
     const reference = getReference();
     if (!reference) {
@@ -166,7 +167,7 @@ function checkPath(rootDir: string, path: string, extention: string = ""){
         READ_ONLY: SharingType.ReadOnly,
         READ_WRITE: SharingType.ReadWrite,
       },
-      undefined
+      undefined,
     );
 
     if (ignoreNetworkErrors) {
@@ -197,21 +198,20 @@ function checkPath(rootDir: string, path: string, extention: string = ""){
       writeJsonReportTo,
       api_tags,
       skipLocalChecks,
-      assessmentMaxWaitTime : auditTimeout ? auditTimeout*1000 : undefined
+      assessmentMaxWaitTime: auditTimeout ? auditTimeout * 1000 : undefined,
+      enableGraphql,
     });
 
-    if(needSarif){
-      const sarif: Sarif  = await produceSarif(result.files);
+    if (needSarif) {
+      const sarif: Sarif = await produceSarif(result.files);
 
-      if(sarifReport){
+      if (sarifReport) {
         try {
           const sarifPath = checkPath(rootDir, sarifReport, "sarif");
           writeFileSync(sarifPath, JSON.stringify(sarif, null, 4));
           core.info(`SARIF report was written to: "${sarifPath}"`);
         } catch (e) {
-          core.setFailed(
-            `Can't write SARIF report\n ${e}`
-          );
+          core.setFailed(`Can't write SARIF report\n ${e}`);
         }
       }
 
@@ -233,7 +233,7 @@ function checkPath(rootDir: string, path: string, extention: string = ""){
       core.info(ex.message);
     } else {
       core.setFailed(
-        `${ex.message} ${(ex?.code || "", ex?.response?.body || "")}`
+        `${ex.message} ${(ex?.code || "", ex?.response?.body || "")}`,
       );
     }
   }
