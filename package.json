@@ -14,15 +14,15 @@
   },
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "@actions/core": "^1.11.1",
-    "@octokit/core": "^6.1.5",
+    "@actions/core": "^3.0.1",
+    "@octokit/core": "^7.0.8",
     "@types/turndown": "^5.0.1",
-    "@xliic/cicd-core-node": "dev",
-    "got": "^14.4.1",
-    "turndown": "^7.1.2"
+    "@xliic/cicd-core-node": "^8.1.0",
+    "got": "^14.6.6",
+    "turndown": "^7.2.4"
   },
   "devDependencies": {
-    "@types/node": "^20.14.11",
-    "typescript": "^5.5.0"
+    "@types/node": "^24.1.0",
+    "typescript": "^6.0.0"
   }
 }

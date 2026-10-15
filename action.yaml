@@ -46,7 +46,7 @@ inputs:
     description: "List of tags to be set on the newly created APIs. Format \"category1:name1 category2:name2\", optional."
     required: false
   ignore-network-errors:
-    description: "If set to 'true', forces to complete execution successfully even if a network error has occurred (such as a failure to connect to 4unch Platform, etc)."
+    description: "If set to 'true', forces to complete execution successfully even if a network error has occurred (such as a failure to connect to 42Crunch Platform, etc)."
     required: false
     default: "false"
   skip-local-checks:
